@@ -2,6 +2,8 @@ package net.watones.novagems.economy;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +103,7 @@ class WalletLoadSimulationTest {
     assertThat(novaThreads).isLessThanOrEqualTo(3);
     wallets.close();
     database.close();
+    releaseSqliteFiles(temp.resolve("outage-load.db"));
   }
 
   @ParameterizedTest(name = "{0} concurrent accounts")
@@ -145,6 +148,29 @@ class WalletLoadSimulationTest {
     assertThat(novaThreads).isLessThanOrEqualTo(3);
     wallets.close();
     storage.close();
+    releaseSqliteFiles(temp.resolve("load.db"));
+  }
+
+  /**
+   * On Windows, sqlite-jdbc's native handle for a WAL-mode database can outlive the Java-level
+   * {@code close()} call by a few dozen milliseconds, which races JUnit's {@code @TempDir}
+   * cleanup and fails the test on an otherwise-passing run. Best-effort delete each SQLite file
+   * ourselves first, retrying briefly, so JUnit's own cleanup has nothing left to trip over.
+   */
+  private static void releaseSqliteFiles(Path databaseFile) throws InterruptedException {
+    String base = databaseFile.getFileName().toString();
+    Path parent = databaseFile.getParent();
+    for (String suffix : new String[] {"", "-wal", "-shm", "-journal"}) {
+      Path file = parent.resolve(base + suffix);
+      for (int attempt = 0; attempt < 20; attempt++) {
+        try {
+          Files.deleteIfExists(file);
+          break;
+        } catch (IOException stillLocked) {
+          Thread.sleep(50);
+        }
+      }
+    }
   }
 
   private static final class ToggleStorage implements StorageProvider {
