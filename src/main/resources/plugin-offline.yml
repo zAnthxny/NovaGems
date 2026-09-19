@@ -1,0 +1,14 @@
+name: NovaCoins
+version: ${version}
+main: net.watones.novacoins.NovaCoinsPlugin
+api-version: '1.21'
+authors: [Watones]
+description: Economía secundaria por ciclos de sesión para Paper.
+softdepend: [PlaceholderAPI]
+commands:
+  watacoins:
+    description: Abre el menú de canjes de WataCoins.
+    usage: /watacoins
+permissions:
+  novacoins.shop: {default: true}
+  novacoins.balance: {default: true}

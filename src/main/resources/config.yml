@@ -1,0 +1,83 @@
+# Sólo cuentan los ciclos completos de la sesión actual.
+rewards:
+  interval-seconds: 1800
+  coins-per-interval: 10
+
+storage:
+  type: SQLITE
+  sqlite:
+    file: novacoins.db
+  mysql:
+    host: localhost
+    port: 3306
+    database: novacoins
+    username: root
+    password: ""
+    pool-size: 10
+    use-ssl: false
+  queues:
+    executor-capacity: 1024
+    per-player: 64
+    global: 4096
+
+leaderboard:
+  cache-seconds: 30
+
+recovery:
+  writer:
+    queue-capacity: 4096
+  processing:
+    batch-size: 250
+    base-interval-seconds: 30
+    max-backoff-seconds: 300
+
+# Las operaciones ya capturadas sobreviven en recovery; no es necesario esperar una DB caída.
+shutdown:
+  journal-drain-timeout-seconds: 5
+  database-drain-timeout-seconds: 5
+
+notifications:
+  reward:
+    chat: true
+    actionbar: false
+    sound:
+      enabled: true
+      name: entity.experience_orb.pickup
+      volume: 0.8
+      pitch: 1.15
+
+shop:
+  full-inventory-behavior: DENY
+  # COMMAND es irreversible y su resultado externo puede ser ambiguo.
+  allow-multiple-irreversible-actions: false
+  sounds:
+    enabled: true
+    click: ui.button.click
+    success: entity.player.levelup
+    failure: block.note_block.bass
+    volume: 0.6
+    pitch: 1.0
+
+anti-abuse:
+  enabled: true
+  mode: CONSERVATIVE
+  detection:
+    minimum-observation-seconds: 600
+    minimum-samples: 120
+    repetitive-pattern-threshold: 0.97
+    evaluation-interval-seconds: 10
+  notifications:
+    player: false
+    console: false
+
+# La URL es una credencial: configúrala sólo en plugins/NovaCoins/config.yml.
+# Nunca se imprime en logs, status ni mensajes del juego.
+alerts:
+  discord:
+    enabled: false
+    webhook-url: ""
+    timeout-millis: 3000
+    dedupe-seconds: 300
+
+# Registra transiciones y métricas útiles sin imprimir secretos.
+debug: false
