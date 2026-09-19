@@ -1,6 +1,6 @@
-name: NovaCoins
+name: NovaGems
 version: ${version}
-main: net.watones.novacoins.NovaCoinsPlugin
+main: net.watones.novagems.NovaGemsPlugin
 api-version: '1.21'
 authors: [Watones]
 description: Economía secundaria por ciclos de sesión para Paper.
@@ -10,9 +10,9 @@ libraries:
   - org.xerial:sqlite-jdbc:3.51.1.0
   - com.mysql:mysql-connector-j:9.6.0
 commands:
-  watacoins:
-    description: Abre el menú de canjes de WataCoins.
-    usage: /watacoins
+  novagems:
+    description: Abre el menú de canjes de NovaGems.
+    usage: /novagems
 permissions:
-  novacoins.shop: {default: true}
-  novacoins.balance: {default: true}
+  novagems.shop: {default: true}
+  novagems.balance: {default: true}

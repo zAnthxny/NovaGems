@@ -1,2 +1,2 @@
-rootProject.name = "NovaCoins"
+rootProject.name = "NovaGems"
 

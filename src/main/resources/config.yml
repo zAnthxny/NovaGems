@@ -1,16 +1,16 @@
 # Sólo cuentan los ciclos completos de la sesión actual.
 rewards:
   interval-seconds: 1800
-  coins-per-interval: 10
+  gems-per-interval: 10
 
 storage:
   type: SQLITE
   sqlite:
-    file: novacoins.db
+    file: novagems.db
   mysql:
     host: localhost
     port: 3306
-    database: novacoins
+    database: novagems
     username: root
     password: ""
     pool-size: 10
@@ -70,7 +70,7 @@ anti-abuse:
     player: false
     console: false
 
-# La URL es una credencial: configúrala sólo en plugins/NovaCoins/config.yml.
+# La URL es una credencial: configúrala sólo en plugins/NovaGems/config.yml.
 # Nunca se imprime en logs, status ni mensajes del juego.
 alerts:
   discord:

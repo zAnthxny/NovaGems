@@ -1,4 +1,4 @@
-# NovaCoins v1.1.4 — checklist de staging
+# NovaGems v1.1.4 — checklist de staging
 
 Instalar y probar cada distribución por separado. Nunca colocar ambos JAR en `plugins/` al mismo tiempo.
 
@@ -10,10 +10,10 @@ Instalar y probar cada distribución por separado. Nunca colocar ambos JAR en `p
 
 ## Arranque y dependencias
 
-- [ ] Arranque limpio con `NovaCoins-1.1.4.jar` y acceso del host a Maven Central.
+- [ ] Arranque limpio con `NovaGems-1.1.4.jar` y acceso del host a Maven Central.
 - [ ] Confirmar en logs que Paper resolvió HikariCP 7.0.2, sqlite-jdbc 3.51.1.0 y mysql-connector-j 9.6.0.
-- [ ] Arranque limpio con `NovaCoins-1.1.4-offline.jar` y acceso externo bloqueado.
-- [ ] Confirmar ausencia de conflictos de clase y que sólo existe una instancia de NovaCoins.
+- [ ] Arranque limpio con `NovaGems-1.1.4-offline.jar` y acceso externo bloqueado.
+- [ ] Confirmar ausencia de conflictos de clase y que sólo existe una instancia de NovaGems.
 - [ ] Confirmar Java 21, Paper 1.21.x y `api-version: 1.21`.
 
 ## Storage
@@ -26,7 +26,7 @@ Instalar y probar cada distribución por separado. Nunca colocar ambos JAR en `p
 
 ## Sesión y recovery
 
-- [ ] Desconectar a 29:59 y confirmar 0 monedas.
+- [ ] Desconectar a 29:59 y confirmar 0 gemas.
 - [ ] Completar 30:00.001 online y recibir +10 con un aviso.
 - [ ] Completar 60 minutos y recibir +20 exactamente una vez.
 - [ ] Entrar con una cuenta veterana de 4,000 horas históricas y confirmar 0 retroactivo.
@@ -68,12 +68,12 @@ Instalar y probar cada distribución por separado. Nunca colocar ambos JAR en `p
 
 ## Operación general
 
-- [ ] `/watacoins`, `/watacoins balance`, `/watacoins help`, PlaceholderAPI, GUI y categorías.
+- [ ] `/novagems`, `/novagems balance`, `/novagems help`, PlaceholderAPI, GUI y categorías.
 - [ ] Confirmar que usuarios normales no ven `admin` en tab completion y que sólo OP puede ejecutarlo.
-- [ ] `/watacoins admin status`, `review` y `recovery`; confirmar la doble ejecución requerida para resolver una revisión.
+- [ ] `/novagems admin status`, `review` y `recovery`; confirmar la doble ejecución requerida para resolver una revisión.
 - [ ] Configurar una webhook de staging nueva y provocar una alerta controlada sin bloquear el hilo principal.
 - [ ] ActivityGuard con movimiento, construcción, inventario y chat normales.
 - [ ] Escenarios de carga de 100, 250 y 500 jugadores.
 - [ ] Observar TPS, MSPT, GC, latencia DB, journal queue y recovery pending durante carga.
-- [ ] Confirmar en `/watacoins admin status` y consola la salud de storage/journal, recovery pendiente, manual review, cola webhook y cualquier cierre incompleto.
+- [ ] Confirmar en `/novagems admin status` y consola la salud de storage/journal, recovery pendiente, manual review, cola webhook y cualquier cierre incompleto.
 - [ ] Revisar logs: sin credenciales, sin spam de retries y sin warnings de drivers/classloader.

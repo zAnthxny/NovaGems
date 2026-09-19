@@ -1,5 +1,5 @@
 settings:
-  title: "<gradient:#F6C453:#EAA629>NovaCoins · Canjes</gradient>"
+  title: "<gradient:#F6C453:#EAA629>NovaGems · Canjes</gradient>"
   confirmation-title: "<gold>Confirmar canje"
 
 gui:
@@ -22,7 +22,7 @@ rewards:
     lore:
       - "<gray>Una llave para la caja Survival."
       - ""
-      - "<gray>Precio: <white><price> monedas"
+      - "<gray>Precio: <white><price> gemas"
     price: 100
     confirmation: true
     actions:

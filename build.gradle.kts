@@ -8,8 +8,8 @@ plugins {
 group = "net.watones"
 version = "1.1.4"
 val pluginVersion = version.toString()
-val slimArtifact = layout.buildDirectory.file("libs/NovaCoins-$pluginVersion.jar")
-val offlineArtifact = layout.buildDirectory.file("libs/NovaCoins-$pluginVersion-offline.jar")
+val slimArtifact = layout.buildDirectory.file("libs/NovaGems-$pluginVersion.jar")
+val offlineArtifact = layout.buildDirectory.file("libs/NovaGems-$pluginVersion-offline.jar")
 
 repositories {
     mavenCentral()
@@ -44,7 +44,7 @@ tasks {
     withType<JavaCompile>().configureEach { options.encoding = "UTF-8" }
     jar {
         enabled = true
-        archiveFileName.set("NovaCoins-${project.version}.jar")
+        archiveFileName.set("NovaGems-${project.version}.jar")
         exclude("plugin-offline.yml")
     }
     processResources {
@@ -55,7 +55,7 @@ tasks {
     }
     test { useJUnitPlatform() }
     shadowJar {
-        archiveFileName.set("NovaCoins-${project.version}-offline.jar")
+        archiveFileName.set("NovaGems-${project.version}-offline.jar")
         exclude("plugin.yml")
         filesMatching("plugin-offline.yml") { name = "plugin.yml" }
         mergeServiceFiles()
@@ -65,7 +65,7 @@ tasks {
                               includeRuntimeLibraries: Boolean) = register<JavaExec>(name) {
         dependsOn(testClasses, if (mode == "slim") jar else shadowJar)
         classpath = sourceSets.test.get().output
-        mainClass.set("net.watones.novacoins.build.ArtifactSmokeMain")
+        mainClass.set("net.watones.novagems.build.ArtifactSmokeMain")
         doFirst {
             val slf4j = configurations.testRuntimeClasspath.get().files
                 .filter { it.name.startsWith("slf4j-") }
