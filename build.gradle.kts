@@ -77,10 +77,12 @@ tasks {
         }
     }
 
-    val verifySlimArtifact = registerArtifactSmoke(
-        "verifySlimArtifact", "slim", slimArtifact, true)
-    val verifyOfflineArtifact = registerArtifactSmoke(
-        "verifyOfflineArtifact", "offline", offlineArtifact, false)
-    check { dependsOn(verifySlimArtifact, verifyOfflineArtifact) }
+    // verifySlimArtifact/verifyOfflineArtifact reference net.watones.novagems.build.ArtifactSmokeMain,
+    // a class that has never existed in this repository (checked the full git history). They were
+    // wired into `check` without ever landing the class, so `build`/`check` always failed here.
+    // Left registered (harmless, just unused) in case someone wants to implement the smoke test and
+    // re-add the dependsOn below; not wiring them in until then.
+    registerArtifactSmoke("verifySlimArtifact", "slim", slimArtifact, true)
+    registerArtifactSmoke("verifyOfflineArtifact", "offline", offlineArtifact, false)
     build { dependsOn(shadowJar) }
 }
