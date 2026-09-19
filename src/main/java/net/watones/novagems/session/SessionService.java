@@ -102,13 +102,17 @@ public final class SessionService {
   }
 
   private void captureCycles(PlayerSession session, long now, long interval, boolean paused) {
+    boolean completedAny;
     try (PendingCompletedRewards.Reservation reservation = pendingCompleted.reserveAvailable()) {
       int completed = session.timer().update(now, interval, paused, reservation.slots());
       List<CompletedReward> materialized = session.materializeCompleted(
           completed, config.current().gemsPerInterval(), Instant.now());
       reservation.commit(materialized);
+      completedAny = !materialized.isEmpty();
     }
-    capturePending();
+    // Only re-scan the shared pending map when this session actually added to it; the
+    // once-per-tick call already drains retries and captures for everyone else.
+    if (completedAny) capturePending();
   }
 
   private void capturePending() {

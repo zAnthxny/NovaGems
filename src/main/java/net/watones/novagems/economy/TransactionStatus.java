@@ -15,9 +15,9 @@ public enum TransactionStatus {
 
   public boolean terminal() {
     return switch (this) {
-      case COMMITTED, DELIVERED, DELIVERY_AMBIGUOUS, DELIVERY_PARTIAL, REFUNDED, MANUAL_REVIEW ->
-          true;
-      case DELIVERY_PENDING, DELIVERY_STARTED, DELIVERY_FAILED, DELIVERY_FAILED_SAFE -> false;
+      case COMMITTED, DELIVERED, DELIVERY_PARTIAL, REFUNDED, MANUAL_REVIEW -> true;
+      case DELIVERY_PENDING, DELIVERY_STARTED, DELIVERY_FAILED, DELIVERY_FAILED_SAFE,
+          DELIVERY_AMBIGUOUS -> false;
     };
   }
 

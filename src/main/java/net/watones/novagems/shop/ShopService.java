@@ -404,6 +404,7 @@ public final class ShopService {
                                 page,
                                 category);
                             logDeliveryAuditFailure(operationId, startError);
+                            if (player.isOnline()) recoverPending(player);
                             return;
                           }
                           DeliveryOutcome outcome =
@@ -421,6 +422,11 @@ public final class ShopService {
                                   ? PurchaseResult.MANUAL_REVIEW
                                   : outcome.result();
                           showResult(player, visible, reward, page, category);
+                          // Another purchase may still be queued behind this player's single
+                          // delivery gate (e.g. several purchases piled up while storage was
+                          // degraded); drain it now instead of waiting for the next periodic
+                          // recovery pass.
+                          if (player.isOnline()) recoverPending(player);
                         }));
   }
 
