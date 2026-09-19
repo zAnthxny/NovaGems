@@ -25,11 +25,13 @@ import net.watones.novagems.economy.TransactionType;
 public abstract class JdbcStorageProvider implements StorageProvider {
   private static final int SCHEMA_VERSION = 5;
   private volatile long maxBalance = Long.MAX_VALUE;
+  private volatile boolean maxBalanceConfigured = false;
 
   @Override
   public void configureMaxBalance(long maxBalance) {
     if (maxBalance < 1) throw new IllegalArgumentException("maxBalance must be positive");
     this.maxBalance = maxBalance;
+    this.maxBalanceConfigured = true;
   }
 
   protected abstract DataSource dataSource();
@@ -342,9 +344,11 @@ public abstract class JdbcStorageProvider implements StorageProvider {
       long spent = before.lifetimeSpent();
       switch (operation.kind()) {
         case CREDIT -> {
-          long capped = Math.min(amount, Math.max(0, maxBalance - balance));
-          balance = Math.addExact(balance, capped);
-          earned = Math.addExact(earned, capped);
+          long applied = maxBalanceConfigured
+              ? Math.min(amount, Math.max(0, maxBalance - balance))
+              : amount;
+          balance = Math.addExact(balance, applied);
+          earned = Math.addExact(earned, applied);
         }
         case DEBIT -> {
           if (balance < amount) {
