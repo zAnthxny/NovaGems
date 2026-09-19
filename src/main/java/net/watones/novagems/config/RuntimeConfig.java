@@ -5,6 +5,8 @@ import org.bukkit.Sound;
 public record RuntimeConfig(
     long intervalSeconds,
     long gemsPerInterval,
+    long maxBalance,
+    KillRewards killRewards,
     StorageSettings storage,
     FullInventoryBehavior fullInventoryBehavior,
     ShopSounds shopSounds,
@@ -29,6 +31,8 @@ public record RuntimeConfig(
     return new RuntimeConfig(
         intervalSeconds,
         gemsPerInterval,
+        maxBalance,
+        killRewards,
         activeStorage,
         fullInventoryBehavior,
         shopSounds,
@@ -91,4 +95,6 @@ public record RuntimeConfig(
       long evaluationIntervalSeconds,
       boolean notifyPlayer,
       boolean notifyConsole) {}
+
+  public record KillRewards(boolean enabled, long gemsPerKill, int dailyLimit) {}
 }

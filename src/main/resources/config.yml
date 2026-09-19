@@ -1,7 +1,18 @@
 # Sólo cuentan los ciclos completos de la sesión actual.
 rewards:
-  interval-seconds: 1800
+  interval-seconds: 600
   gems-per-interval: 10
+  # Gemas por eliminar a otro jugador. daily-limit es la cantidad máxima de
+  # asesinatos recompensados por jugador cada día (0 desactiva el límite).
+  kills:
+    enabled: true
+    gems-per-kill: 1
+    daily-limit: 10
+
+# Nadie puede acumular más gemas que este tope; las ganancias que lo superarían
+# se recortan para no pasarlo. Súbelo o bájalo cuando quieras, se recarga en caliente.
+economy:
+  max-balance: 10000000
 
 storage:
   type: SQLITE

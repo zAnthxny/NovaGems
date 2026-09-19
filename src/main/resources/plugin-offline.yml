@@ -6,8 +6,11 @@ authors: [Watones]
 description: Economía secundaria por ciclos de sesión para Paper.
 softdepend: [PlaceholderAPI]
 commands:
+  gemas:
+    description: Abre el menú de canjes y consulta tu saldo de gemas.
+    usage: /gemas
   novagems:
-    description: Abre el menú de canjes de NovaGems.
+    description: Panel administrativo de NovaGems (solo staff con /op).
     usage: /novagems
 permissions:
   novagems.shop: {default: true}

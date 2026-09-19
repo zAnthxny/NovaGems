@@ -24,6 +24,13 @@ import net.watones.novagems.economy.TransactionType;
 /** Shared, additive JDBC schema and the authoritative balance mutation transaction. */
 public abstract class JdbcStorageProvider implements StorageProvider {
   private static final int SCHEMA_VERSION = 5;
+  private volatile long maxBalance = Long.MAX_VALUE;
+
+  @Override
+  public void configureMaxBalance(long maxBalance) {
+    if (maxBalance < 1) throw new IllegalArgumentException("maxBalance must be positive");
+    this.maxBalance = maxBalance;
+  }
 
   protected abstract DataSource dataSource();
 
@@ -335,8 +342,9 @@ public abstract class JdbcStorageProvider implements StorageProvider {
       long spent = before.lifetimeSpent();
       switch (operation.kind()) {
         case CREDIT -> {
-          balance = Math.addExact(balance, amount);
-          earned = Math.addExact(earned, amount);
+          long capped = Math.min(amount, Math.max(0, maxBalance - balance));
+          balance = Math.addExact(balance, capped);
+          earned = Math.addExact(earned, capped);
         }
         case DEBIT -> {
           if (balance < amount) {

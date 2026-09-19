@@ -4,7 +4,9 @@ Economía secundaria por tiempo de sesión para Paper 1.21.x y Java 21.
 
 ## Semántica de sesión
 
-NovaGems concede por defecto 10 gemas por cada ciclo completo de 30 minutos de la conexión actual. Usa `System.nanoTime()`, conserva el excedente entre ciclos y admite ciclos ilimitados. Al salir, ser expulsado o detenerse el plugin se hace una última liquidación con el instante real: todo ciclo ya completado se envía a persistencia; el resto incompleto se descarta. Nunca se consulta ni se importa el playtime histórico de Minecraft.
+NovaGems concede por defecto 10 gemas por cada ciclo completo de 10 minutos de la conexión actual. Usa `System.nanoTime()`, conserva el excedente entre ciclos y admite ciclos ilimitados. Al salir, ser expulsado o detenerse el plugin se hace una última liquidación con el instante real: todo ciclo ya completado se envía a persistencia; el resto incompleto se descarta. Nunca se consulta ni se importa el playtime histórico de Minecraft.
+
+También concede gemas por PvP: cada jugador que elimine a otro jugador recibe `rewards.kills.gems-per-kill` (por defecto 1), hasta `rewards.kills.daily-limit` eliminaciones por día (por defecto 10; el contador vive en memoria y se reinicia si el servidor se reinicia). Ningún saldo puede superar `economy.max-balance` (por defecto 10,000,000): las ganancias que lo superarían se recortan en el momento de aplicarse.
 
 El `ActivityGuard` conservador usa memoria fija, ingesta O(1) y evalúa como máximo cada 10 segundos. Sólo pausa tras una ventana prolongada con patrones artificiales extraordinariamente repetitivos. Caminar, construir, abrir inventarios o conversar aportan evidencia legítima y evitan falsos positivos. No sanciona ni ejecuta comandos.
 
@@ -37,23 +39,26 @@ El slim necesita acceso al repositorio Maven configurado por Paper en el primer 
 
 ## Comandos
 
-- `/novagems` — abre directamente el menú de canjes.
-- `/novagems balance` — muestra el saldo propio.
-- `/novagems help` — muestra la ayuda en forma de lista.
-- `/novagems admin give|take|set <jugador> <cantidad>` — sólo operadores.
-- `/novagems admin reset <jugador>` — sólo operadores.
-- `/novagems admin reload` — sólo operadores.
-- `/novagems admin status` — estado compacto de economía, journal y webhook.
-- `/novagems admin review [operación]` — consulta y resolución confirmada de `MANUAL_REVIEW`.
-- `/novagems admin recovery [corrupt]` — ejecuta un batch seguro o lista cuarentenas.
+`/gemas` es el comando de cualquier jugador; `/novagems` es exclusivo de staff con `/op` — no existe forma de habilitarlo por permisos.
 
-Las acciones bajo `/novagems admin` comprueban directamente el estado OP y no pueden habilitarse mediante permisos administrativos granulares.
+- `/gemas` — abre directamente el menú de canjes.
+- `/gemas balance` — muestra el saldo propio.
+- `/gemas help` — muestra la ayuda en forma de lista.
+- `/novagems help` — muestra la ayuda administrativa. Sólo operadores.
+- `/novagems give|take|set <jugador> <cantidad>` — sólo operadores.
+- `/novagems reset <jugador>` — sólo operadores.
+- `/novagems reload` — sólo operadores.
+- `/novagems status` — estado compacto de economía, journal y webhook.
+- `/novagems review [operación]` — consulta y resolución confirmada de `MANUAL_REVIEW`.
+- `/novagems recovery [corrupt]` — ejecuta un batch seguro o lista cuarentenas.
+
+`/novagems` comprueba directamente el estado OP y no puede habilitarse mediante permisos administrativos granulares.
 
 ## PlaceholderAPI
 
 Todos los placeholders leen caché O(1) y nunca hacen SQL:
 
-- `%novagems_balance%`, `%novagems_balance_formatted%`
+- `%novagems_balance%` (número crudo) y `%novagems_balance_formatted%` (compacto para scoreboards: `999`, `1k`, `1.5k`, `10m`)
 - `%novagems_lifetime_earned%`, `%novagems_lifetime_spent%`
 - `%novagems_session_elapsed%`, `%novagems_cycle_elapsed%`
 - `%novagems_session_remaining%`, `%novagems_cycle_remaining%`

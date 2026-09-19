@@ -33,7 +33,7 @@ public final class ConfigManager {
 
   public RuntimeConfig parseCandidate() {
     FileConfiguration config = loadConfigFile();
-    long interval = config.getLong("rewards.interval-seconds", 1800);
+    long interval = config.getLong("rewards.interval-seconds", 600);
     long gems = config.getLong("rewards.gems-per-interval", 10);
     if (interval <= 0 || interval > 31_536_000) {
       throw new IllegalArgumentException(
@@ -42,6 +42,19 @@ public final class ConfigManager {
     if (gems <= 0 || gems > 1_000_000_000_000L) {
       throw new IllegalArgumentException(
           "rewards.gems-per-interval debe estar entre 1 y 1000000000000");
+    }
+    long maxBalance = config.getLong("economy.max-balance", 10_000_000L);
+    if (maxBalance < 1 || maxBalance > 1_000_000_000_000L) {
+      throw new IllegalArgumentException("economy.max-balance debe estar entre 1 y 1000000000000");
+    }
+    boolean killRewardsEnabled = config.getBoolean("rewards.kills.enabled", true);
+    long gemsPerKill = config.getLong("rewards.kills.gems-per-kill", 1);
+    int killDailyLimit = config.getInt("rewards.kills.daily-limit", 10);
+    if (gemsPerKill < 1 || gemsPerKill > maxBalance) {
+      throw new IllegalArgumentException("rewards.kills.gems-per-kill debe ser positivo");
+    }
+    if (killDailyLimit < 0 || killDailyLimit > 100_000) {
+      throw new IllegalArgumentException("rewards.kills.daily-limit debe estar entre 0 y 100000");
     }
 
     RuntimeConfig.StorageSettings storage = parseStorage(config);
@@ -159,6 +172,8 @@ public final class ConfigManager {
     return new RuntimeConfig(
         interval,
         gems,
+        maxBalance,
+        new RuntimeConfig.KillRewards(killRewardsEnabled, gemsPerKill, killDailyLimit),
         storage,
         inventoryBehavior,
         new RuntimeConfig.ShopSounds(

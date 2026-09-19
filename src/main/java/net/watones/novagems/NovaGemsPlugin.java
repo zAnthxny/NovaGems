@@ -13,6 +13,7 @@ import net.watones.novagems.config.RuntimeConfig;
 import net.watones.novagems.config.ShopConfig;
 import net.watones.novagems.economy.WalletService;
 import net.watones.novagems.listener.ActivityListener;
+import net.watones.novagems.listener.KillRewardListener;
 import net.watones.novagems.listener.PlayerConnectionListener;
 import net.watones.novagems.message.MessageService;
 import net.watones.novagems.placeholder.NovaGemsExpansion;
@@ -62,6 +63,7 @@ public final class NovaGemsPlugin extends JavaPlugin {
 
       StorageProvider initializedStorage = config.createStorage();
       initializedStorage.initialize();
+      initializedStorage.configureMaxBalance(runtime.maxBalance());
       RuntimeConfig.QueueLimits queueLimits = runtime.queues();
       RuntimeConfig.RecoverySettings recovery = runtime.recovery();
       WalletService initializedWallets = new WalletService(
@@ -137,6 +139,8 @@ public final class NovaGemsPlugin extends JavaPlugin {
     getServer().getPluginManager().registerEvents(connections, this);
     getServer().getPluginManager().registerEvents(new ActivityListener(context.guard), this);
     getServer().getPluginManager().registerEvents(new ShopListener(context.shop), this);
+    getServer().getPluginManager().registerEvents(
+        new KillRewardListener(this, context.wallets, context.config, context.messages), this);
 
     NovaGemsCommand novaGems = new NovaGemsCommand(
         this, context.wallets, context.messages, context.config, context.shopConfig,
@@ -149,6 +153,8 @@ public final class NovaGemsPlugin extends JavaPlugin {
         });
     command("novagems").setExecutor(novaGems);
     command("novagems").setTabCompleter(novaGems);
+    command("gemas").setExecutor(novaGems);
+    command("gemas").setTabCompleter(novaGems);
 
     rewardTask = Bukkit.getScheduler().runTaskTimer(this, context.sessions::tick, 20L, 20L);
     alertTask = Bukkit.getScheduler().runTaskTimer(this, this::checkOperationalAlerts,

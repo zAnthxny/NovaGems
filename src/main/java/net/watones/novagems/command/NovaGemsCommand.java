@@ -91,15 +91,20 @@ public final class NovaGemsCommand implements CommandExecutor, TabCompleter {
 
   @Override
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
+    if (label.equalsIgnoreCase("gemas")) return onGemasCommand(sender, args);
+    return onAdminCommand(sender, args);
+  }
+
+  /** /gemas — every player's own command: shop, balance, help. */
+  private boolean onGemasCommand(CommandSender sender, String[] args) {
     if (args.length == 0) {
       openShop(sender);
       return true;
     }
     switch (args[0].toLowerCase(Locale.ROOT)) {
-      case "help" -> showHelp(sender);
+      case "help" -> showGemasHelp(sender);
       case "balance" -> showBalance(sender, args);
-      case "admin" -> executeAdmin(sender, args);
-      default -> messages.send(sender, "novagems-unknown");
+      default -> messages.send(sender, "gemas-unknown");
     }
     return true;
   }
@@ -118,7 +123,7 @@ public final class NovaGemsCommand implements CommandExecutor, TabCompleter {
 
   private void showBalance(CommandSender sender, String[] args) {
     if (args.length != 1) {
-      messages.send(sender, "novagems-balance-usage");
+      messages.send(sender, "gemas-balance-usage");
       return;
     }
     if (!(sender instanceof Player player)) {
@@ -135,72 +140,80 @@ public final class NovaGemsCommand implements CommandExecutor, TabCompleter {
         () -> messages.send(player, "account-loading"));
   }
 
-  private void showHelp(CommandSender sender) {
-    sender.sendMessage(messages.component("novagems-help-header"));
-    sender.sendMessage(messages.component("novagems-help-shop"));
-    sender.sendMessage(messages.component("novagems-help-balance"));
-    if (!sender.isOp()) return;
-    sender.sendMessage(messages.component("novagems-help-admin-header"));
-    sender.sendMessage(messages.component("novagems-help-admin-give"));
-    sender.sendMessage(messages.component("novagems-help-admin-take"));
-    sender.sendMessage(messages.component("novagems-help-admin-set"));
-    sender.sendMessage(messages.component("novagems-help-admin-reset"));
-    sender.sendMessage(messages.component("novagems-help-admin-reload"));
-    sender.sendMessage(messages.component("novagems-help-admin-status"));
-    sender.sendMessage(messages.component("novagems-help-admin-review"));
-    sender.sendMessage(messages.component("novagems-help-admin-recovery"));
+  private void showGemasHelp(CommandSender sender) {
+    sender.sendMessage(messages.component("gemas-help-header"));
+    sender.sendMessage(messages.component("gemas-help-shop"));
+    sender.sendMessage(messages.component("gemas-help-balance"));
   }
 
-  private void executeAdmin(CommandSender sender, String[] args) {
+  private void showAdminHelp(CommandSender sender) {
+    sender.sendMessage(messages.component("novagems-help-header"));
+    sender.sendMessage(messages.component("novagems-help-give"));
+    sender.sendMessage(messages.component("novagems-help-take"));
+    sender.sendMessage(messages.component("novagems-help-set"));
+    sender.sendMessage(messages.component("novagems-help-reset"));
+    sender.sendMessage(messages.component("novagems-help-reload"));
+    sender.sendMessage(messages.component("novagems-help-status"));
+    sender.sendMessage(messages.component("novagems-help-review"));
+    sender.sendMessage(messages.component("novagems-help-recovery"));
+  }
+
+  /** /novagems — staff-only command. Gated by OP status directly, never by a permission node. */
+  private boolean onAdminCommand(CommandSender sender, String[] args) {
     if (!sender.isOp()) {
       messages.send(sender, "no-permission");
-      return;
+      return true;
     }
-    if (args.length < 2) {
-      messages.send(sender, "novagems-admin-usage");
-      return;
+    if (args.length == 0) {
+      showAdminHelp(sender);
+      return true;
     }
-    String action = args[1].toLowerCase(Locale.ROOT);
+    String action = args[0].toLowerCase(Locale.ROOT);
+    if (action.equals("help")) {
+      showAdminHelp(sender);
+      return true;
+    }
     if (action.equals("status")) {
-      if (args.length != 2) messages.send(sender, "novagems-admin-usage");
+      if (args.length != 1) messages.send(sender, "novagems-usage");
       else status(sender);
-      return;
+      return true;
     }
     if (action.equals("review")) {
       reviewCommand(sender, args);
-      return;
+      return true;
     }
     if (action.equals("recovery")) {
       recoveryCommand(sender, args);
-      return;
+      return true;
     }
     if (action.equals("reload")) {
-      if (args.length != 2) messages.send(sender, "novagems-admin-usage");
+      if (args.length != 1) messages.send(sender, "novagems-usage");
       else reload(sender);
-      return;
+      return true;
     }
     if (!ADMIN_ACTIONS.contains(action)) {
-      messages.send(sender, "novagems-admin-usage");
-      return;
+      messages.send(sender, "novagems-usage");
+      return true;
     }
     if (action.equals("reset")) {
-      if (args.length != 3) {
-        messages.send(sender, "novagems-admin-usage");
-        return;
+      if (args.length != 2) {
+        messages.send(sender, "novagems-usage");
+        return true;
       }
-      mutate(sender, args[2], action, 0);
-      return;
+      mutate(sender, args[1], action, 0);
+      return true;
     }
-    if (args.length != 4) {
-      messages.send(sender, "novagems-admin-usage");
-      return;
+    if (args.length != 3) {
+      messages.send(sender, "novagems-usage");
+      return true;
     }
-    Long amount = parseAmount(args[3], action.equals("set"));
+    Long amount = parseAmount(args[2], action.equals("set"));
     if (amount == null) {
       messages.send(sender, "invalid-amount");
-      return;
+      return true;
     }
-    mutate(sender, args[2], action, amount);
+    mutate(sender, args[1], action, amount);
+    return true;
   }
 
   private void mutate(CommandSender sender, String target, String operation, long amount) {
@@ -298,6 +311,7 @@ public final class NovaGemsCommand implements CommandExecutor, TabCompleter {
             runtimeCandidate.databaseDrainTimeoutSeconds());
         wallets.onDebug(runtimeCandidate.debug()
             ? message -> plugin.getLogger().info("[debug] " + message) : null);
+        wallets.configureMaxBalance(runtimeCandidate.maxBalance());
         messages.swap(messageCandidate);
         shopConfig.swap(shopCandidate);
         alertReload.accept(runtimeCandidate.alerts());
@@ -360,27 +374,31 @@ public final class NovaGemsCommand implements CommandExecutor, TabCompleter {
   @Override
   public List<String> onTabComplete(
       CommandSender sender, Command command, String alias, String[] args) {
+    if (alias.equalsIgnoreCase("gemas")) {
+      if (args.length == 1) return matching(List.of("balance", "help"), args[0]);
+      return List.of();
+    }
+    if (!sender.isOp()) return List.of();
     if (args.length == 1) {
-      List<String> visible = sender.isOp()
-          ? List.of("balance", "help", "admin") : List.of("balance", "help");
-      return matching(visible, args[0]);
+      return matching(
+          List.of("give", "take", "set", "reset", "reload", "status", "review", "recovery",
+              "help"),
+          args[0]);
     }
-    if (!sender.isOp() || !args[0].equalsIgnoreCase("admin")) return List.of();
-    if (args.length == 2) return matching(ADMIN_ACTIONS, args[1]);
-    if (args.length == 3 && args[1].equalsIgnoreCase("recovery")) {
-      return matching(List.of("corrupt"), args[2]);
+    if (args.length == 2 && args[0].equalsIgnoreCase("recovery")) {
+      return matching(List.of("corrupt"), args[1]);
     }
-    if (args.length == 4 && args[1].equalsIgnoreCase("review")) {
-      return matching(List.of("delivered", "refund", "retry"), args[3]);
+    if (args.length == 3 && args[0].equalsIgnoreCase("review")) {
+      return matching(List.of("delivered", "refund", "retry"), args[2]);
     }
-    if (args.length == 5 && args[1].equalsIgnoreCase("review")) {
-      return matching(List.of("confirm"), args[4]);
+    if (args.length == 4 && args[0].equalsIgnoreCase("review")) {
+      return matching(List.of("confirm"), args[3]);
     }
-    if (args.length == 3 && List.of("give", "take", "set", "reset")
-        .contains(args[1].toLowerCase(Locale.ROOT))) {
+    if (args.length == 2 && List.of("give", "take", "set", "reset")
+        .contains(args[0].toLowerCase(Locale.ROOT))) {
       return Bukkit.getOnlinePlayers().stream().map(Player::getName)
           .filter(name -> name.toLowerCase(Locale.ROOT)
-              .startsWith(args[2].toLowerCase(Locale.ROOT)))
+              .startsWith(args[1].toLowerCase(Locale.ROOT)))
           .toList();
     }
     return List.of();
@@ -420,7 +438,7 @@ public final class NovaGemsCommand implements CommandExecutor, TabCompleter {
   }
 
   private void recoveryCommand(CommandSender sender, String[] args) {
-    if (args.length == 3 && args[2].equalsIgnoreCase("corrupt")) {
+    if (args.length == 2 && args[1].equalsIgnoreCase("corrupt")) {
       wallets.corruptRecoveryRecords().whenComplete((records, error) -> sync(() -> {
         if (error != null) {
           messages.send(sender, "account-error");
@@ -434,8 +452,8 @@ public final class NovaGemsCommand implements CommandExecutor, TabCompleter {
       }));
       return;
     }
-    if (args.length != 2) {
-      messages.send(sender, "novagems-admin-usage");
+    if (args.length != 1) {
+      messages.send(sender, "novagems-usage");
       return;
     }
     wallets.replayRecovery().whenComplete((report, error) -> sync(() -> {
@@ -448,7 +466,7 @@ public final class NovaGemsCommand implements CommandExecutor, TabCompleter {
   }
 
   private void reviewCommand(CommandSender sender, String[] args) {
-    if (args.length == 2) {
+    if (args.length == 1) {
       wallets.deliveryFailures(1, 50).whenComplete((entries, error) -> sync(() -> {
         if (error != null) {
           messages.send(sender, "account-error");
@@ -465,9 +483,9 @@ public final class NovaGemsCommand implements CommandExecutor, TabCompleter {
       }));
       return;
     }
-    UUID operationId = operationId(sender, args[2]);
+    UUID operationId = operationId(sender, args[1]);
     if (operationId == null) return;
-    if (args.length == 3) {
+    if (args.length == 2) {
       wallets.transaction(operationId).whenComplete((found, error) -> sync(() -> {
         if (error != null) messages.send(sender, "account-error");
         else if (found.isEmpty()) messages.send(sender, "review-not-found");
@@ -485,17 +503,17 @@ public final class NovaGemsCommand implements CommandExecutor, TabCompleter {
       }));
       return;
     }
-    if (args.length < 4 || !Set.of("delivered", "refund", "retry")
-        .contains(args[3].toLowerCase(Locale.ROOT))) {
+    if (args.length < 3 || !Set.of("delivered", "refund", "retry")
+        .contains(args[2].toLowerCase(Locale.ROOT))) {
       messages.send(sender, "review-usage");
       return;
     }
-    if (args.length > 5 || (args.length == 5 && !args[4].equalsIgnoreCase("confirm"))) {
+    if (args.length > 4 || (args.length == 4 && !args[3].equalsIgnoreCase("confirm"))) {
       messages.send(sender, "review-usage");
       return;
     }
-    resolveReview(sender, operationId, args[3].toLowerCase(Locale.ROOT),
-        args.length == 5 && args[4].equalsIgnoreCase("confirm"));
+    resolveReview(sender, operationId, args[2].toLowerCase(Locale.ROOT),
+        args.length == 4 && args[3].equalsIgnoreCase("confirm"));
   }
 
   private UUID operationId(CommandSender sender, String raw) {

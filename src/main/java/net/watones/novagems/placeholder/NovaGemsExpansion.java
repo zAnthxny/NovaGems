@@ -46,7 +46,7 @@ public final class NovaGemsExpansion extends PlaceholderExpansion {
     var account = wallets.account(player.getUniqueId());
     return switch (params.toLowerCase()) {
       case "balance" -> account.map(a -> Long.toString(a.balance())).orElse("");
-      case "balance_formatted" -> account.map(a -> Formatters.number(a.balance())).orElse("");
+      case "balance_formatted" -> account.map(a -> Formatters.compact(a.balance())).orElse("");
       case "lifetime_earned" -> account.map(a -> Long.toString(a.lifetimeEarned())).orElse("");
       case "lifetime_spent" -> account.map(a -> Long.toString(a.lifetimeSpent())).orElse("");
       case "session_elapsed", "cycle_elapsed" ->

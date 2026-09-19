@@ -17,4 +17,13 @@ public final class Formatters {
   public static String signed(long value) {
     return (value >= 0 ? "+" : "") + number(value);
   }
+
+  /** Compact form for tight spaces (scoreboards): 999, 1k, 1.5k, 10m. */
+  public static String compact(long value) {
+    if (value < 0) return "-" + compact(-value);
+    if (value < 1000) return Long.toString(value);
+    NumberFormat compact = NumberFormat.getCompactNumberInstance(Locale.US, NumberFormat.Style.SHORT);
+    compact.setMaximumFractionDigits(1);
+    return compact.format(value).toLowerCase(Locale.ROOT);
+  }
 }

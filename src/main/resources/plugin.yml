@@ -10,8 +10,11 @@ libraries:
   - org.xerial:sqlite-jdbc:3.51.1.0
   - com.mysql:mysql-connector-j:9.6.0
 commands:
+  gemas:
+    description: Abre el menú de canjes y consulta tu saldo de gemas.
+    usage: /gemas
   novagems:
-    description: Abre el menú de canjes de NovaGems.
+    description: Panel administrativo de NovaGems (solo staff con /op).
     usage: /novagems
 permissions:
   novagems.shop: {default: true}

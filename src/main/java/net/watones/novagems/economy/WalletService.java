@@ -1154,6 +1154,8 @@ public final class WalletService implements AutoCloseable {
 
   public JournalHealth journalHealth() { return journal.health(); }
 
+  public void configureMaxBalance(long maxBalance) { storage.configureMaxBalance(maxBalance); }
+
   public boolean canAcceptPurchase(UUID accountId) {
     return accepting && health == StorageHealth.HEALTHY
         && !pendingAdministrativeOperations.isPending(accountId)

@@ -33,6 +33,9 @@ public interface StorageProvider extends AutoCloseable {
 
   default long maxAccountSequence(UUID accountId) throws Exception { return 0; }
 
+  /** No-op unless overridden: caps how high a CREDIT can push a balance. Hot-reloadable. */
+  default void configureMaxBalance(long maxBalance) {}
+
   /** Atomically claims and acknowledges all outstanding playtime notices for one account. */
   default Optional<RewardNotification> claimRewardNotification(UUID accountId) throws Exception {
     return Optional.empty();
