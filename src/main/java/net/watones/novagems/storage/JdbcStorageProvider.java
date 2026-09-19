@@ -52,10 +52,10 @@ public abstract class JdbcStorageProvider implements StorageProvider {
               + " created_at BIGINT NOT NULL, completed_at BIGINT, account_sequence BIGINT NOT NULL DEFAULT 0,"
               + " reward_notified INTEGER NOT NULL DEFAULT 0, reward_notification_claim VARCHAR(36))");
       statement.executeUpdate(
-          "CREATE TABLE IF NOT EXISTS novagems_schema (schema_key VARCHAR(32) PRIMARY KEY,"
+          "CREATE TABLE IF NOT EXISTS novacoins_schema (schema_key VARCHAR(32) PRIMARY KEY,"
               + " schema_version INTEGER NOT NULL)");
       statement.executeUpdate(
-          "CREATE TABLE IF NOT EXISTS novagems_admin_audit (id "
+          "CREATE TABLE IF NOT EXISTS novacoins_admin_audit (id "
               + idColumn()
               + ", admin_uuid VARCHAR(36) NOT NULL, action VARCHAR(32) NOT NULL, operation_id"
               + " VARCHAR(36) NOT NULL, old_status VARCHAR(32) NOT NULL, new_status VARCHAR(32)"
@@ -70,7 +70,7 @@ public abstract class JdbcStorageProvider implements StorageProvider {
     ensureIndex("coin_transactions", "idx_coin_transactions_status_created", "status, created_at", false);
     ensureIndex("coin_accounts", "idx_coin_accounts_balance", "balance", false);
     ensureIndex(
-        "novagems_admin_audit", "idx_novagems_audit_operation", "operation_id, created_at", false);
+        "novacoins_admin_audit", "idx_novacoins_audit_operation", "operation_id, created_at", false);
     writeSchemaVersion();
   }
 
@@ -92,7 +92,7 @@ public abstract class JdbcStorageProvider implements StorageProvider {
         statement.executeUpdate("UPDATE coin_transactions SET reward_notified=1");
       }
     }
-    addColumnIfMissing("novagems_admin_audit", "details", "VARCHAR(512)");
+    addColumnIfMissing("novacoins_admin_audit", "details", "VARCHAR(512)");
   }
 
   private boolean addColumnIfMissing(String table, String column, String definition)
@@ -140,12 +140,12 @@ public abstract class JdbcStorageProvider implements StorageProvider {
     try (Connection connection = dataSource().getConnection();
         PreparedStatement update =
             connection.prepareStatement(
-                "UPDATE novagems_schema SET schema_version=? WHERE schema_key='core'")) {
+                "UPDATE novacoins_schema SET schema_version=? WHERE schema_key='core'")) {
       update.setInt(1, SCHEMA_VERSION);
       if (update.executeUpdate() != 0) return;
       try (PreparedStatement insert =
           connection.prepareStatement(
-              "INSERT INTO novagems_schema(schema_key,schema_version) VALUES('core',?)")) {
+              "INSERT INTO novacoins_schema(schema_key,schema_version) VALUES('core',?)")) {
         insert.setInt(1, SCHEMA_VERSION);
         insert.executeUpdate();
       } catch (SQLException race) {
@@ -674,7 +674,7 @@ public abstract class JdbcStorageProvider implements StorageProvider {
           if (update.executeUpdate() != 1) throw new SQLException("Concurrent manual resolution");
         }
         try (PreparedStatement audit = connection.prepareStatement(
-            "INSERT INTO novagems_admin_audit(admin_uuid,action,operation_id,old_status,new_status,details,created_at)"
+            "INSERT INTO novacoins_admin_audit(admin_uuid,action,operation_id,old_status,new_status,details,created_at)"
                 + " VALUES(?,?,?,?,?,?,?)")) {
           audit.setString(1, truncate(adminId, 36));
           audit.setString(2, truncate(action, 32));
@@ -776,7 +776,7 @@ public abstract class JdbcStorageProvider implements StorageProvider {
       Connection connection, String adminId, String action, UUID operationId,
       TransactionStatus oldStatus, TransactionStatus newStatus, String details) throws SQLException {
     try (PreparedStatement audit = connection.prepareStatement(
-        "INSERT INTO novagems_admin_audit(admin_uuid,action,operation_id,old_status,new_status,details,created_at)"
+        "INSERT INTO novacoins_admin_audit(admin_uuid,action,operation_id,old_status,new_status,details,created_at)"
             + " VALUES(?,?,?,?,?,?,?)")) {
       audit.setString(1, truncate(adminId, 36));
       audit.setString(2, truncate(action, 32));

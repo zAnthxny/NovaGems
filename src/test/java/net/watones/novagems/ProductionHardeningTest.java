@@ -298,7 +298,7 @@ class ProductionHardeningTest {
     assertThat(database.loadAccount(player).orElseThrow().balance()).isEqualTo(75);
     try (var connection = DriverManager.getConnection("jdbc:sqlite:" + databasePath);
         var statement = connection.createStatement();
-        var result = statement.executeQuery("SELECT COUNT(*) FROM novagems_admin_audit")) {
+        var result = statement.executeQuery("SELECT COUNT(*) FROM novacoins_admin_audit")) {
       assertThat(result.next()).isTrue();
       assertThat(result.getInt(1)).isEqualTo(2);
     }

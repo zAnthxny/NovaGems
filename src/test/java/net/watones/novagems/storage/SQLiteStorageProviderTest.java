@@ -47,12 +47,12 @@ class SQLiteStorageProviderTest {
     try (var connection = DriverManager.getConnection("jdbc:sqlite:" + database);
         Statement statement = connection.createStatement()) {
       try (ResultSet version = statement.executeQuery(
-          "SELECT schema_version FROM novagems_schema WHERE schema_key='core'")) {
+          "SELECT schema_version FROM novacoins_schema WHERE schema_key='core'")) {
         assertThat(version.next()).isTrue();
         assertThat(version.getInt(1)).isEqualTo(5);
       }
       try (ResultSet audit = statement.executeQuery(
-          "SELECT COUNT(*) FROM novagems_admin_audit WHERE operation_id='" + deliveryId + "'")) {
+          "SELECT COUNT(*) FROM novacoins_admin_audit WHERE operation_id='" + deliveryId + "'")) {
         assertThat(audit.next()).isTrue();
         assertThat(audit.getInt(1)).isEqualTo(1);
       }
@@ -73,8 +73,8 @@ class SQLiteStorageProviderTest {
       statement.executeUpdate(
           "CREATE TABLE coin_transactions (id INTEGER PRIMARY KEY AUTOINCREMENT,operation_id VARCHAR(36),uuid VARCHAR(36) NOT NULL,amount BIGINT NOT NULL,balance_before BIGINT NOT NULL,balance_after BIGINT NOT NULL,transaction_type VARCHAR(32) NOT NULL,reason VARCHAR(128) NOT NULL,reference_value VARCHAR(128),status VARCHAR(32) NOT NULL DEFAULT 'COMMITTED',delivery_error VARCHAR(512),created_at BIGINT NOT NULL,completed_at BIGINT)");
       statement.executeUpdate(
-          "CREATE TABLE novagems_schema (schema_key VARCHAR(32) PRIMARY KEY,schema_version INTEGER NOT NULL)");
-      statement.executeUpdate("INSERT INTO novagems_schema VALUES('core',2)");
+          "CREATE TABLE novacoins_schema (schema_key VARCHAR(32) PRIMARY KEY,schema_version INTEGER NOT NULL)");
+      statement.executeUpdate("INSERT INTO novacoins_schema VALUES('core',2)");
       statement.executeUpdate(
           "INSERT INTO coin_accounts VALUES('" + id + "','V2',75,100,25,1,2)");
       statement.executeUpdate(
@@ -95,13 +95,13 @@ class SQLiteStorageProviderTest {
         Statement statement = connection.createStatement()) {
       try (ResultSet version =
           statement.executeQuery(
-              "SELECT schema_version FROM novagems_schema WHERE schema_key='core'")) {
+              "SELECT schema_version FROM novacoins_schema WHERE schema_key='core'")) {
         assertThat(version.next()).isTrue();
         assertThat(version.getInt(1)).isEqualTo(5);
       }
       try (ResultSet audit =
           statement.executeQuery(
-              "SELECT name FROM sqlite_master WHERE type='table' AND name='novagems_admin_audit'")) {
+              "SELECT name FROM sqlite_master WHERE type='table' AND name='novacoins_admin_audit'")) {
         assertThat(audit.next()).isTrue();
       }
     }
