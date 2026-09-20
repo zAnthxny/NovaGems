@@ -1,6 +1,6 @@
 settings:
   title: "<gradient:#C77DFF:#7B2CBF>¡Tienda de Gemas!</gradient>"
-  confirmation-title: "<gold>Confirmar canje"
+  confirmation-title: "<gradient:#C77DFF:#7B2CBF>Confirmar Compra</gradient>"
 
 gui:
   size: 54
@@ -15,15 +15,21 @@ gui:
 rewards:
   llave-voto:
     page: 1
-    category: llaves
+    category: general
     slot: 11
     material: LIGHT_GRAY_CANDLE
     glow: true
-    name: "<#D3D3D3>Llave Voto"
+    name: "<white>Llave <gray>‣ <bold><#FFF727>V<#EEE629>O<#DCD62B>T<#CBC52D>O"
     lore:
-      - "<gray>Una llave del crate Voto."
+      - "<dark_gray>-  🎁 Recompensas - "
+      - "<white>Adquiere instantaneamente esta"
+      - "<white>llave en tu inventario. "
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<white>Podras utilizarla en /warp crates"
+      - ""
+      - "<dark_gray>Información"
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
+      - "<green>Disponible "
     price: 2500
     confirmation: true
     actions:
@@ -34,15 +40,21 @@ rewards:
 
   llave-keyall:
     page: 1
-    category: llaves
+    category: general
     slot: 12
     material: PINK_CANDLE
     glow: true
-    name: "<#FF8FD1>Llave KeyAll"
+    name: "<white>Llave <gray>‣ <bold><#FF41F7>K<#FF34EA>E<#FF27DD>Y<#FF1AD1>A<#FF0DC4>L<#FF00B7>L"
     lore:
-      - "<gray>Una llave del crate KeyAll."
+      - "<dark_gray>-  🎁 Recompensas - "
+      - "<white>Adquiere instantaneamente esta"
+      - "<white>llave en tu inventario. "
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<white>Podras utilizarla en /warp crates"
+      - ""
+      - "<dark_gray>Información"
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
+      - "<green>Disponible "
     price: 2600
     confirmation: true
     actions:
@@ -53,15 +65,21 @@ rewards:
 
   llave-epica:
     page: 1
-    category: llaves
+    category: general
     slot: 13
     material: PURPLE_CANDLE
     glow: true
-    name: "<dark_purple>Llave Épica"
+    name: "<white>Llave <gray>‣ <bold><#8F1EC3>E<#9A20D2>P<#A523E1>I<#AF25F0>C<#BA27FF>A"
     lore:
-      - "<gray>Una llave del crate Épico."
+      - "<dark_gray>-  🎁 Recompensas - "
+      - "<white>Adquiere instantaneamente esta"
+      - "<white>llave en tu inventario. "
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<white>Podras utilizarla en /warp crates"
+      - ""
+      - "<dark_gray>Información"
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
+      - "<green>Disponible "
     price: 3600
     confirmation: true
     actions:
@@ -72,15 +90,21 @@ rewards:
 
   llave-spawner:
     page: 1
-    category: llaves
+    category: general
     slot: 14
     material: WHITE_CANDLE
     glow: true
-    name: "<white>Llave Spawner"
+    name: "<white>Llave <gray>‣ <bold><#FFFFFF>S<#ECECEC>P<#D9D9D9>A<#C6C6C6>W<#C3C3C3>N<#C1C1C1>E<#BEBEBE>R"
     lore:
-      - "<gray>Una llave del crate Spawner."
+      - "<dark_gray>-  🎁 Recompensas - "
+      - "<white>Adquiere instantaneamente esta"
+      - "<white>llave en tu inventario. "
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<white>Podras utilizarla en /warp crates"
+      - ""
+      - "<dark_gray>Información"
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
+      - "<green>Disponible "
     price: 5400
     confirmation: true
     actions:
@@ -91,15 +115,21 @@ rewards:
 
   llave-exclusiva:
     page: 1
-    category: llaves
+    category: general
     slot: 15
     material: ORANGE_CANDLE
     glow: true
-    name: "<#FFA500>Llave Exclusiva"
+    name: "<white>Llave <gray>‣ <bold><#FD9742>E<#FDA03A>x<#FDA931>c<#FDB229>l<#FEBB21>u<#FEC319>s<#FECC10>i<#FFD508>v<#FFDE00>a"
     lore:
-      - "<gray>Una llave del crate Exclusiva."
+      - "<dark_gray>-  🎁 Recompensas - "
+      - "<white>Adquiere instantaneamente esta"
+      - "<white>llave en tu inventario. "
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<white>Podras utilizarla en /warp crates"
+      - ""
+      - "<dark_gray>Información"
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
+      - "<green>Disponible "
     price: 7500
     confirmation: true
     actions:
@@ -110,14 +140,18 @@ rewards:
 
   rango-waton:
     page: 1
-    category: rangos
+    category: general
     slot: 20
     material: ENCHANTED_BOOK
-    name: "<green>Rango Waton <gray>(7 días)"
+    name: "<dark_gray>｢<bold><#2c5fc4>W<#326de0>A<#377afc>T<#316bdc>O<#2a5bbc>N</bold><dark_gray>｣<white> <gray>(7 días)"
     lore:
-      - "<gray>Rango Waton durante 7 días."
+      - "<dark_gray>-  🎁 Recompensas - "
+      - "<white>Adquiere instantaneamente un "
+      - "<white>rango vip temporal "
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<dark_gray>Información"
+      - "<gray>Duración: 7 días "
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 4500
     confirmation: true
     actions:
@@ -129,14 +163,18 @@ rewards:
 
   rango-vip-mas:
     page: 1
-    category: rangos
+    category: general
     slot: 21
     material: ENCHANTED_BOOK
-    name: "<aqua>Rango VIP+ <gray>(7 días)"
+    name: "<dark_gray>｢<bold><#00efff>V<#00f6f7>I<#00fdee>P<#0093ff>+</bold><dark_gray>｣<white> <gray>(7 días)"
     lore:
-      - "<gray>Rango VIP+ durante 7 días."
+      - "<dark_gray>-  🎁 Recompensas - "
+      - "<white>Adquiere instantaneamente un "
+      - "<white>rango vip temporal "
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<dark_gray>Información"
+      - "<gray>Duración: 7 días "
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 7500
     confirmation: true
     actions:
@@ -148,14 +186,18 @@ rewards:
 
   rango-mvip-mas:
     page: 1
-    category: rangos
-    slot: 22
+    category: general
+    slot: 23
     material: ENCHANTED_BOOK
-    name: "<light_purple>Rango MVIP+ <gray>(7 días)"
+    name: "<dark_gray>｢<bold><#ff3e3e>M<#fe3535>V<#fe2d2d>I<#fd2424>P<#bc0000>+</bold><dark_gray>｣<white> <gray>(7 días)"
     lore:
-      - "<gray>Rango MVIP+ durante 7 días."
+      - "<dark_gray>-  🎁 Recompensas - "
+      - "<white>Adquiere instantaneamente un "
+      - "<white>rango vip temporal "
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<dark_gray>Información"
+      - "<gray>Duración: 7 días "
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 12000
     confirmation: true
     actions:
@@ -167,14 +209,18 @@ rewards:
 
   rango-mvip-mas-mas:
     page: 1
-    category: rangos
-    slot: 23
+    category: general
+    slot: 24
     material: ENCHANTED_BOOK
-    name: "<gold>Rango MVIP++ <gray>(7 días)"
+    name: "<dark_gray>｢<bold><#FBDA00>M<#FDD600>V<#FED100>I<#FEC500>P<#FDB200>+<#FB9E00>+</bold><dark_gray>｣<white> <gray>(7 días)"
     lore:
-      - "<gray>Rango MVIP++ durante 7 días."
+      - "<dark_gray>-  🎁 Recompensas - "
+      - "<white>Adquiere instantaneamente un "
+      - "<white>rango vip temporal "
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<dark_gray>Información"
+      - "<gray>Duración: 7 días "
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 18000
     confirmation: true
     actions:
@@ -186,14 +232,24 @@ rewards:
 
   cmd-repair:
     page: 1
-    category: comandos
-    slot: 37
+    category: general
+    slot: 28
     material: ANVIL
-    name: "<yellow>/repair <gray>(1 día)"
+    name: "<yellow>Comando /repair <gray>(1 día)"
     lore:
-      - "<gray>Acceso a /repair durante 1 día."
+      - "<dark_gray>-  🎁 Recompensas -"
+      - "<white>Adquiere temporalmente el uso"
+      - "<white>gratuito de un comando vip"
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<gray>‣ Con este comando podrás reparar"
+      - "<gray>  tus herramientas y armadura"
+      - "<gray>  al instante infinitamente "
+      - ""
+      - "<dark_gray>Información"
+      - "<gray>‣ Comando: <yellow>/repair"
+      - "<gray>‣ Duración: 1 día"
+      - ""
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 1200
     confirmation: true
     actions:
@@ -205,14 +261,24 @@ rewards:
 
   cmd-anvil:
     page: 1
-    category: comandos
-    slot: 38
+    category: general
+    slot: 29
     material: CHIPPED_ANVIL
-    name: "<yellow>/anvil <gray>(1 día)"
+    name: "<yellow>Comando /anvil <gray>(1 día)"
     lore:
-      - "<gray>Acceso a un yunque portátil durante 1 día."
+      - "<dark_gray>-  🎁 Recompensas -"
+      - "<white>Adquiere temporalmente el uso"
+      - "<white>gratuito de un comando vip"
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<gray>‣ Con este comando podrás abrir"
+      - "<gray>  un yunque portátil"
+      - "<gray>  al instante infinitamente "
+      - ""
+      - "<dark_gray>Información"
+      - "<gray>‣ Comando: <yellow>/anvil"
+      - "<gray>‣ Duración: 1 día"
+      - ""
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 1200
     confirmation: true
     actions:
@@ -224,14 +290,24 @@ rewards:
 
   cmd-fly-1d:
     page: 1
-    category: comandos
-    slot: 39
+    category: general
+    slot: 30
     material: FEATHER
-    name: "<yellow>/fly <gray>(1 día)"
+    name: "<yellow>Comando /fly <gray>(1 día)"
     lore:
-      - "<gray>Acceso a /fly durante 1 día."
+      - "<dark_gray>-  🎁 Recompensas -"
+      - "<white>Adquiere temporalmente el uso"
+      - "<white>gratuito de un comando vip"
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<gray>‣ Con este comando podrás volar"
+      - "<gray>  libremente"
+      - "<gray>  al instante infinitamente "
+      - ""
+      - "<dark_gray>Información"
+      - "<gray>‣ Comando: <yellow>/fly"
+      - "<gray>‣ Duración: 1 día"
+      - ""
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 2100
     confirmation: true
     actions:
@@ -243,14 +319,24 @@ rewards:
 
   cmd-fly-3d:
     page: 1
-    category: comandos
-    slot: 40
+    category: general
+    slot: 31
     material: FEATHER
-    name: "<yellow>/fly <gray>(3 días)"
+    name: "<yellow>Comando /fly <gray>(3 días)"
     lore:
-      - "<gray>Acceso a /fly durante 3 días."
+      - "<dark_gray>-  🎁 Recompensas -"
+      - "<white>Adquiere temporalmente el uso"
+      - "<white>gratuito de un comando vip"
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<gray>‣ Con este comando podrás volar"
+      - "<gray>  libremente"
+      - "<gray>  al instante infinitamente "
+      - ""
+      - "<dark_gray>Información"
+      - "<gray>‣ Comando: <yellow>/fly"
+      - "<gray>‣ Duración: 3 días"
+      - ""
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 4500
     confirmation: true
     actions:
@@ -262,14 +348,24 @@ rewards:
 
   cmd-fly-5d:
     page: 1
-    category: comandos
-    slot: 41
+    category: general
+    slot: 32
     material: FEATHER
-    name: "<yellow>/fly <gray>(5 días)"
+    name: "<yellow>Comando /fly <gray>(5 días)"
     lore:
-      - "<gray>Acceso a /fly durante 5 días."
+      - "<dark_gray>-  🎁 Recompensas -"
+      - "<white>Adquiere temporalmente el uso"
+      - "<white>gratuito de un comando vip"
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<gray>‣ Con este comando podrás volar"
+      - "<gray>  libremente"
+      - "<gray>  al instante infinitamente "
+      - ""
+      - "<dark_gray>Información"
+      - "<gray>‣ Comando: <yellow>/fly"
+      - "<gray>‣ Duración: 5 días"
+      - ""
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 5400
     confirmation: true
     actions:
@@ -281,14 +377,24 @@ rewards:
 
   cmd-enderchest-5d:
     page: 1
-    category: comandos
-    slot: 42
+    category: general
+    slot: 33
     material: ENDER_CHEST
-    name: "<yellow>/enderchest <gray>(5 días)"
+    name: "<yellow>Comando /enderchest <gray>(5 días)"
     lore:
-      - "<gray>Acceso a /enderchest durante 5 días."
+      - "<dark_gray>-  🎁 Recompensas -"
+      - "<white>Adquiere temporalmente el uso"
+      - "<white>gratuito de un comando vip"
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<gray>‣ Con este comando podrás abrir"
+      - "<gray>  tu enderchest desde cualquier lugar"
+      - "<gray>  al instante infinitamente "
+      - ""
+      - "<dark_gray>Información"
+      - "<gray>‣ Comando: <yellow>/enderchest"
+      - "<gray>‣ Duración: 5 días"
+      - ""
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 3000
     confirmation: true
     actions:
@@ -300,14 +406,24 @@ rewards:
 
   cmd-craft-5d:
     page: 1
-    category: comandos
-    slot: 43
+    category: general
+    slot: 34
     material: CRAFTING_TABLE
-    name: "<yellow>/craft <gray>(5 días)"
+    name: "<yellow>Comando /craft <gray>(5 días)"
     lore:
-      - "<gray>Acceso a /craft durante 5 días."
+      - "<dark_gray>-  🎁 Recompensas -"
+      - "<white>Adquiere temporalmente el uso"
+      - "<white>gratuito de un comando vip"
       - ""
-      - "<gray>Precio: <white><price> gemas"
+      - "<gray>‣ Con este comando podrás abrir"
+      - "<gray>  una mesa de crafteo portátil"
+      - "<gray>  al instante infinitamente "
+      - ""
+      - "<dark_gray>Información"
+      - "<gray>‣ Comando: <yellow>/craft"
+      - "<gray>‣ Duración: 5 días"
+      - ""
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 3000
     confirmation: true
     actions:

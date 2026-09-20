@@ -136,6 +136,7 @@ public final class ShopService {
     if (selectedPage < pageCount)
       inventory.setItem(
           shop.layout().nextSlot(), named(Material.ARROW, "<yellow>Página siguiente", List.of()));
+    fillEmpty(inventory);
     player.openInventory(inventory);
   }
 
@@ -195,18 +196,25 @@ public final class ShopService {
         Bukkit.createInventory(holder, 27, messages.parse(config.current().confirmationTitle()));
     holder.inventory(inventory);
     long balance = wallets.account(player.getUniqueId()).map(PlayerAccount::balance).orElse(0L);
-    inventory.setItem(11, icon(player, reward, balance));
+    List<String> lore = new java.util.ArrayList<>();
+    reward.lore().stream().map(line -> replace(line, player, reward, balance)).forEach(lore::add);
+    lore.add("");
+    lore.add("<gray>Saldo actual: <white>" + Formatters.number(balance));
+    lore.add(
+        "<gray>Saldo después: <white>"
+            + Formatters.number(Math.max(0, balance - reward.price())));
+    lore.add("");
+    lore.add("<green>✓ Click para confirmar la compra");
     inventory.setItem(
-        15,
+        13,
         named(
-            Material.LIME_CONCRETE,
-            "<green>Confirmar canje",
-            List.of(
-                "<gray>Precio: <white>" + Formatters.number(reward.price()),
-                "<gray>Saldo actual: <white>" + Formatters.number(balance),
-                "<gray>Saldo después: <white>"
-                    + Formatters.number(Math.max(0, balance - reward.price())))));
-    inventory.setItem(22, named(Material.RED_CONCRETE, "<red>Cancelar", List.of()));
+            reward.icon(),
+            replace(reward.name(), player, reward, balance),
+            lore,
+            reward.glow()));
+    inventory.setItem(
+        11, named(Material.RED_CONCRETE, "<red>Cancelar", List.of("<gray>Vuelve a la tienda")));
+    fillEmpty(inventory);
     player.openInventory(inventory);
   }
 
@@ -714,6 +722,13 @@ public final class ShopService {
     }
     item.setItemMeta(meta);
     return item;
+  }
+
+  private void fillEmpty(Inventory inventory) {
+    ItemStack filler = named(Material.BLACK_STAINED_GLASS_PANE, " ", List.of());
+    for (int slot = 0; slot < inventory.getSize(); slot++) {
+      if (inventory.getItem(slot) == null) inventory.setItem(slot, filler);
+    }
   }
 
   private void playUiSound(Player player, org.bukkit.Sound sound) {
