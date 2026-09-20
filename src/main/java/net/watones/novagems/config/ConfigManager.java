@@ -48,7 +48,7 @@ public final class ConfigManager {
       throw new IllegalArgumentException("economy.max-balance debe estar entre 1 y 1000000000000");
     }
     boolean killRewardsEnabled = config.getBoolean("rewards.kills.enabled", true);
-    long gemsPerKill = config.getLong("rewards.kills.gems-per-kill", 1);
+    long gemsPerKill = config.getLong("rewards.kills.gems-per-kill", 10);
     int killDailyLimit = config.getInt("rewards.kills.daily-limit", 10);
     if (gemsPerKill < 1 || gemsPerKill > maxBalance) {
       throw new IllegalArgumentException("rewards.kills.gems-per-kill debe ser positivo");

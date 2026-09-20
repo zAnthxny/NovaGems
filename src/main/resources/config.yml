@@ -6,7 +6,7 @@ rewards:
   # asesinatos recompensados por jugador cada día (0 desactiva el límite).
   kills:
     enabled: true
-    gems-per-kill: 1
+    gems-per-kill: 10
     daily-limit: 10
 
 # Nadie puede acumular más gemas que este tope; las ganancias que lo superarían

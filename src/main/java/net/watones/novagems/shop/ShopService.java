@@ -122,7 +122,9 @@ public final class ShopService {
             "<gold>Información",
             List.of(
                 "<gray>Página <white>" + selectedPage + "<gray>/<white>" + pageCount,
-                "<gray>Saldo: <white>" + Formatters.number(balance))));
+                "<gray>Saldo: <white>" + Formatters.number(balance),
+                "",
+                "<gray>Presiona <white>ESC<gray> para cerrar este menú")));
     if (shop.categorySelectorVisible()) {
       inventory.setItem(
           shop.layout().categorySlot(),
@@ -131,8 +133,6 @@ public final class ShopService {
               "<gold>Categoría: <white>" + categoryLabel(category),
               List.of("<gray>Click para cambiar")));
     }
-    inventory.setItem(
-        shop.layout().closeSlot(), named(Material.BARRIER, "<red>Cerrar", List.of()));
     if (selectedPage < pageCount)
       inventory.setItem(
           shop.layout().nextSlot(), named(Material.ARROW, "<yellow>Página siguiente", List.of()));
@@ -148,10 +148,6 @@ public final class ShopService {
     ShopSnapshot snapshot = config.current();
     if (slot == snapshot.layout().previousSlot() && holder.page() > 1) {
       open(player, holder.page() - 1, holder.category());
-      return;
-    }
-    if (slot == snapshot.layout().closeSlot()) {
-      player.closeInventory();
       return;
     }
     if (slot == snapshot.layout().categorySlot() && snapshot.categorySelectorVisible()) {

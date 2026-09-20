@@ -38,7 +38,13 @@ public final class KillRewardListener implements Listener {
     if (killer == null || killer.getUniqueId().equals(event.getEntity().getUniqueId())) return;
     RuntimeConfig.KillRewards settings = config.current().killRewards();
     if (!settings.enabled()) return;
-    int resultingCount = tracker.registerKill(killer.getUniqueId(), settings.dailyLimit());
+    int resultingCount =
+        tracker.registerKill(
+            killer.getUniqueId(), event.getEntity().getUniqueId(), settings.dailyLimit());
+    if (resultingCount == DailyKillTracker.DUPLICATE_VICTIM) {
+      if (killer.isOnline()) messages.send(killer, "kill-reward-duplicate-victim");
+      return;
+    }
     if (resultingCount < 0) return;
     long amount = settings.gemsPerKill();
     wallets

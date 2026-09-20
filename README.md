@@ -6,7 +6,7 @@ Economía secundaria por tiempo de sesión para Paper 1.21.x y Java 21.
 
 NovaGems concede por defecto 10 gemas por cada ciclo completo de 10 minutos de la conexión actual. Usa `System.nanoTime()`, conserva el excedente entre ciclos y admite ciclos ilimitados. Al salir, ser expulsado o detenerse el plugin se hace una última liquidación con el instante real: todo ciclo ya completado se envía a persistencia; el resto incompleto se descarta. Nunca se consulta ni se importa el playtime histórico de Minecraft.
 
-También concede gemas por PvP: cada jugador que elimine a otro jugador recibe `rewards.kills.gems-per-kill` (por defecto 1), hasta `rewards.kills.daily-limit` eliminaciones por día (por defecto 10; el contador vive en memoria y se reinicia si el servidor se reinicia). Ningún saldo puede superar `economy.max-balance` (por defecto 10,000,000): las ganancias que lo superarían se recortan en el momento de aplicarse.
+También concede gemas por PvP: cada jugador que elimine a otro jugador recibe `rewards.kills.gems-per-kill` (por defecto 10), hasta `rewards.kills.daily-limit` eliminaciones por día (por defecto 10; el contador vive en memoria y se reinicia si el servidor se reinicia). Cada eliminación solo cuenta si la víctima es distinta de las ya eliminadas ese mismo día — matar repetidamente al mismo jugador no otorga más recompensa, para evitar el farmeo de kills. Ningún saldo puede superar `economy.max-balance` (por defecto 10,000,000): las ganancias que lo superarían se recortan en el momento de aplicarse.
 
 El `ActivityGuard` conservador usa memoria fija, ingesta O(1) y evalúa como máximo cada 10 segundos. Sólo pausa tras una ventana prolongada con patrones artificiales extraordinariamente repetitivos. Caminar, construir, abrir inventarios o conversar aportan evidencia legítima y evitan falsos positivos. No sanciona ni ejecuta comandos.
 
@@ -42,7 +42,8 @@ El slim necesita acceso al repositorio Maven configurado por Paper en el primer 
 `/gemas` es el comando de cualquier jugador; `/novagems` es exclusivo de staff con `/op` — no existe forma de habilitarlo por permisos.
 
 - `/gemas` — abre directamente el menú de canjes.
-- `/gemas balance` — muestra el saldo propio.
+- `/gemas bal` — muestra el saldo propio.
+- `/gemas top` — muestra el top 10 de jugadores con más gemas.
 - `/gemas help` — muestra la ayuda en forma de lista.
 - `/novagems help` — muestra la ayuda administrativa. Sólo operadores.
 - `/novagems give|take|set <jugador> <cantidad>` — sólo operadores.

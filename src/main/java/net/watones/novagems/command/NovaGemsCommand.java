@@ -103,10 +103,36 @@ public final class NovaGemsCommand implements CommandExecutor, TabCompleter {
     }
     switch (args[0].toLowerCase(Locale.ROOT)) {
       case "help" -> showGemasHelp(sender);
-      case "balance" -> showBalance(sender, args);
+      case "balance", "bal" -> showBalance(sender, args);
+      case "top" -> showTop(sender, args);
       default -> messages.send(sender, "gemas-unknown");
     }
     return true;
+  }
+
+  private void showTop(CommandSender sender, String[] args) {
+    if (args.length != 1) {
+      messages.send(sender, "gemas-top-usage");
+      return;
+    }
+    if (!sender.hasPermission("novagems.balance")) {
+      messages.send(sender, "no-permission");
+      return;
+    }
+    wallets.leaderboard(1, 10).whenComplete((entries, error) -> sync(() -> {
+      if (error != null) {
+        messages.send(sender, "account-error");
+        return;
+      }
+      sender.sendMessage(messages.component("top-header", Map.of("page", "1")));
+      int position = 1;
+      for (var entry : entries) {
+        sender.sendMessage(messages.component("top-entry", Map.of(
+            "position", Integer.toString(position++),
+            "player", entry.name(),
+            "balance", Formatters.number(entry.balance()))));
+      }
+    }));
   }
 
   private void openShop(CommandSender sender) {
@@ -144,6 +170,7 @@ public final class NovaGemsCommand implements CommandExecutor, TabCompleter {
     sender.sendMessage(messages.component("gemas-help-header"));
     sender.sendMessage(messages.component("gemas-help-shop"));
     sender.sendMessage(messages.component("gemas-help-balance"));
+    sender.sendMessage(messages.component("gemas-help-top"));
   }
 
   private void showAdminHelp(CommandSender sender) {
@@ -375,7 +402,7 @@ public final class NovaGemsCommand implements CommandExecutor, TabCompleter {
   public List<String> onTabComplete(
       CommandSender sender, Command command, String alias, String[] args) {
     if (alias.equalsIgnoreCase("gemas")) {
-      if (args.length == 1) return matching(List.of("balance", "help"), args[0]);
+      if (args.length == 1) return matching(List.of("balance", "bal", "top", "help"), args[0]);
       return List.of();
     }
     if (!sender.isOp()) return List.of();

@@ -25,11 +25,10 @@ rewards:
       - "<white>Adquiere instantaneamente esta"
       - "<white>llave en tu inventario. "
       - ""
-      - "<white>Podras utilizarla en /warp crates"
+      - "<white>Podras utilizarla en <red>/warp crates"
       - ""
       - "<dark_gray>Información"
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
-      - "<green>Disponible "
     price: 2500
     confirmation: true
     actions:
@@ -50,11 +49,10 @@ rewards:
       - "<white>Adquiere instantaneamente esta"
       - "<white>llave en tu inventario. "
       - ""
-      - "<white>Podras utilizarla en /warp crates"
+      - "<white>Podras utilizarla en <red>/warp crates"
       - ""
       - "<dark_gray>Información"
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
-      - "<green>Disponible "
     price: 2600
     confirmation: true
     actions:
@@ -75,11 +73,10 @@ rewards:
       - "<white>Adquiere instantaneamente esta"
       - "<white>llave en tu inventario. "
       - ""
-      - "<white>Podras utilizarla en /warp crates"
+      - "<white>Podras utilizarla en <red>/warp crates"
       - ""
       - "<dark_gray>Información"
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
-      - "<green>Disponible "
     price: 3600
     confirmation: true
     actions:
@@ -100,11 +97,10 @@ rewards:
       - "<white>Adquiere instantaneamente esta"
       - "<white>llave en tu inventario. "
       - ""
-      - "<white>Podras utilizarla en /warp crates"
+      - "<white>Podras utilizarla en <red>/warp crates"
       - ""
       - "<dark_gray>Información"
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
-      - "<green>Disponible "
     price: 5400
     confirmation: true
     actions:
@@ -125,11 +121,10 @@ rewards:
       - "<white>Adquiere instantaneamente esta"
       - "<white>llave en tu inventario. "
       - ""
-      - "<white>Podras utilizarla en /warp crates"
+      - "<white>Podras utilizarla en <red>/warp crates"
       - ""
       - "<dark_gray>Información"
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
-      - "<green>Disponible "
     price: 7500
     confirmation: true
     actions:
@@ -150,7 +145,7 @@ rewards:
       - "<white>rango vip temporal "
       - ""
       - "<dark_gray>Información"
-      - "<gray>Duración: 7 días "
+      - "<gray>Duración<dark_gray>: <green>7 días"
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 4500
     confirmation: true
@@ -173,7 +168,7 @@ rewards:
       - "<white>rango vip temporal "
       - ""
       - "<dark_gray>Información"
-      - "<gray>Duración: 7 días "
+      - "<gray>Duración<dark_gray>: <green>7 días"
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 7500
     confirmation: true
@@ -196,7 +191,7 @@ rewards:
       - "<white>rango vip temporal "
       - ""
       - "<dark_gray>Información"
-      - "<gray>Duración: 7 días "
+      - "<gray>Duración<dark_gray>: <green>7 días"
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 12000
     confirmation: true
@@ -219,7 +214,7 @@ rewards:
       - "<white>rango vip temporal "
       - ""
       - "<dark_gray>Información"
-      - "<gray>Duración: 7 días "
+      - "<gray>Duración<dark_gray>: <green>7 días"
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 18000
     confirmation: true
@@ -235,7 +230,7 @@ rewards:
     category: general
     slot: 28
     material: ANVIL
-    name: "<yellow>Comando /repair <gray>(1 día)"
+    name: "<yellow>⭐<white>Comando <green><bold>/REPAIR</bold></green> <gray>(1d)"
     lore:
       - "<dark_gray>-  🎁 Recompensas -"
       - "<white>Adquiere temporalmente el uso"
@@ -243,11 +238,11 @@ rewards:
       - ""
       - "<gray>‣ Con este comando podrás reparar"
       - "<gray>  tus herramientas y armadura"
-      - "<gray>  al instante infinitamente "
+      - "<gray>  al instante"
       - ""
       - "<dark_gray>Información"
       - "<gray>‣ Comando: <yellow>/repair"
-      - "<gray>‣ Duración: 1 día"
+      - "<gray>‣ Duración<dark_gray>: <green>1 día"
       - ""
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 1200
@@ -264,7 +259,7 @@ rewards:
     category: general
     slot: 29
     material: CHIPPED_ANVIL
-    name: "<yellow>Comando /anvil <gray>(1 día)"
+    name: "<yellow>⭐<white>Comando <green><bold>/ANVIL</bold></green> <gray>(1d)"
     lore:
       - "<dark_gray>-  🎁 Recompensas -"
       - "<white>Adquiere temporalmente el uso"
@@ -272,11 +267,11 @@ rewards:
       - ""
       - "<gray>‣ Con este comando podrás abrir"
       - "<gray>  un yunque portátil"
-      - "<gray>  al instante infinitamente "
+      - "<gray>  al instante"
       - ""
       - "<dark_gray>Información"
       - "<gray>‣ Comando: <yellow>/anvil"
-      - "<gray>‣ Duración: 1 día"
+      - "<gray>‣ Duración<dark_gray>: <green>1 día"
       - ""
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 1200
@@ -293,19 +288,18 @@ rewards:
     category: general
     slot: 30
     material: FEATHER
-    name: "<yellow>Comando /fly <gray>(1 día)"
+    name: "<yellow>⭐<white>Comando <green><bold>/FLY</bold></green> <gray>(1d)"
     lore:
       - "<dark_gray>-  🎁 Recompensas -"
       - "<white>Adquiere temporalmente el uso"
       - "<white>gratuito de un comando vip"
       - ""
       - "<gray>‣ Con este comando podrás volar"
-      - "<gray>  libremente"
-      - "<gray>  al instante infinitamente "
+      - "<gray>  libremente al instante"
       - ""
       - "<dark_gray>Información"
       - "<gray>‣ Comando: <yellow>/fly"
-      - "<gray>‣ Duración: 1 día"
+      - "<gray>‣ Duración<dark_gray>: <green>1 día"
       - ""
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 2100
@@ -322,19 +316,18 @@ rewards:
     category: general
     slot: 31
     material: FEATHER
-    name: "<yellow>Comando /fly <gray>(3 días)"
+    name: "<yellow>⭐<white>Comando <green><bold>/FLY</bold></green> <gray>(3d)"
     lore:
       - "<dark_gray>-  🎁 Recompensas -"
       - "<white>Adquiere temporalmente el uso"
       - "<white>gratuito de un comando vip"
       - ""
       - "<gray>‣ Con este comando podrás volar"
-      - "<gray>  libremente"
-      - "<gray>  al instante infinitamente "
+      - "<gray>  libremente al instante"
       - ""
       - "<dark_gray>Información"
       - "<gray>‣ Comando: <yellow>/fly"
-      - "<gray>‣ Duración: 3 días"
+      - "<gray>‣ Duración<dark_gray>: <green>3 días"
       - ""
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 4500
@@ -351,19 +344,18 @@ rewards:
     category: general
     slot: 32
     material: FEATHER
-    name: "<yellow>Comando /fly <gray>(5 días)"
+    name: "<yellow>⭐<white>Comando <green><bold>/FLY</bold></green> <gray>(5d)"
     lore:
       - "<dark_gray>-  🎁 Recompensas -"
       - "<white>Adquiere temporalmente el uso"
       - "<white>gratuito de un comando vip"
       - ""
       - "<gray>‣ Con este comando podrás volar"
-      - "<gray>  libremente"
-      - "<gray>  al instante infinitamente "
+      - "<gray>  libremente al instante"
       - ""
       - "<dark_gray>Información"
       - "<gray>‣ Comando: <yellow>/fly"
-      - "<gray>‣ Duración: 5 días"
+      - "<gray>‣ Duración<dark_gray>: <green>5 días"
       - ""
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 5400
@@ -380,7 +372,7 @@ rewards:
     category: general
     slot: 33
     material: ENDER_CHEST
-    name: "<yellow>Comando /enderchest <gray>(5 días)"
+    name: "<yellow>⭐<white>Comando <green><bold>/ENDERCHEST</bold></green> <gray>(5d)"
     lore:
       - "<dark_gray>-  🎁 Recompensas -"
       - "<white>Adquiere temporalmente el uso"
@@ -388,11 +380,11 @@ rewards:
       - ""
       - "<gray>‣ Con este comando podrás abrir"
       - "<gray>  tu enderchest desde cualquier lugar"
-      - "<gray>  al instante infinitamente "
+      - "<gray>  al instante"
       - ""
       - "<dark_gray>Información"
       - "<gray>‣ Comando: <yellow>/enderchest"
-      - "<gray>‣ Duración: 5 días"
+      - "<gray>‣ Duración<dark_gray>: <green>5 días"
       - ""
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 3000
@@ -409,7 +401,7 @@ rewards:
     category: general
     slot: 34
     material: CRAFTING_TABLE
-    name: "<yellow>Comando /craft <gray>(5 días)"
+    name: "<yellow>⭐<white>Comando <green><bold>/CRAFT</bold></green> <gray>(5d)"
     lore:
       - "<dark_gray>-  🎁 Recompensas -"
       - "<white>Adquiere temporalmente el uso"
@@ -417,11 +409,11 @@ rewards:
       - ""
       - "<gray>‣ Con este comando podrás abrir"
       - "<gray>  una mesa de crafteo portátil"
-      - "<gray>  al instante infinitamente "
+      - "<gray>  al instante"
       - ""
       - "<dark_gray>Información"
       - "<gray>‣ Comando: <yellow>/craft"
-      - "<gray>‣ Duración: 5 días"
+      - "<gray>‣ Duración<dark_gray>: <green>5 días"
       - ""
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 3000
