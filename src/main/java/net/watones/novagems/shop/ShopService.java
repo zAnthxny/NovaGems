@@ -99,14 +99,23 @@ public final class ShopService {
         Bukkit.createInventory(holder, shop.size(), messages.parse(shop.title()));
     holder.inventory(inventory);
     long balance = wallets.account(player.getUniqueId()).map(PlayerAccount::balance).orElse(0L);
+    RuntimeConfig runtime = runtimeConfig.current();
+    long intervalMinutes = runtime.intervalSeconds() / 60;
     inventory.setItem(
         shop.layout().profileSlot(),
         playerHead(
             player,
             "<gold>" + player.getName(),
             List.of(
-                "<gray>Saldo",
-                "<white>" + Formatters.number(balance) + " gemas")));
+                "<gray>Podrás conseguir gemas de",
+                "<gray>las siguientes maneras:",
+                "",
+                "<green>1.- <white>Cada " + intervalMinutes + " minutos conseguirás <light_purple>"
+                    + Formatters.number(runtime.gemsPerInterval()) + " gemas",
+                "<green>2.- <white>Por cada eliminación conseguirás <light_purple>"
+                    + Formatters.number(runtime.killRewards().gemsPerKill()) + " gemas",
+                "",
+                "<yellow>Saldo<dark_gray>: <light_purple>" + Formatters.number(balance) + " gemas")));
     for (ShopReward reward : shop.rewards().values()) {
       if (reward.page() == selectedPage
           && ("all".equals(category) || reward.category().equalsIgnoreCase(category)))
@@ -117,14 +126,7 @@ public final class ShopService {
           shop.layout().previousSlot(), named(Material.ARROW, "<yellow>Página anterior", List.of()));
     inventory.setItem(
         shop.layout().infoSlot(),
-        named(
-            Material.BOOK,
-            "<gold>Información",
-            List.of(
-                "<gray>Página <white>" + selectedPage + "<gray>/<white>" + pageCount,
-                "<gray>Saldo: <white>" + Formatters.number(balance),
-                "",
-                "<gray>Presiona <white>ESC<gray> para cerrar este menú")));
+        named(Material.OAK_DOOR, "<red>Cerrar", List.of("<gray>Click para cerrar este menú"), true));
     if (shop.categorySelectorVisible()) {
       inventory.setItem(
           shop.layout().categorySlot(),
@@ -148,6 +150,10 @@ public final class ShopService {
     ShopSnapshot snapshot = config.current();
     if (slot == snapshot.layout().previousSlot() && holder.page() > 1) {
       open(player, holder.page() - 1, holder.category());
+      return;
+    }
+    if (slot == snapshot.layout().infoSlot()) {
+      player.closeInventory();
       return;
     }
     if (slot == snapshot.layout().categorySlot() && snapshot.categorySelectorVisible()) {

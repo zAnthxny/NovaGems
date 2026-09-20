@@ -49,7 +49,7 @@ shutdown:
 
 notifications:
   reward:
-    chat: true
+    chat: false
     actionbar: false
     sound:
       enabled: true

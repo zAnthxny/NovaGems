@@ -140,7 +140,7 @@ public final class NovaGemsPlugin extends JavaPlugin {
     getServer().getPluginManager().registerEvents(new ActivityListener(context.guard), this);
     getServer().getPluginManager().registerEvents(new ShopListener(context.shop), this);
     getServer().getPluginManager().registerEvents(
-        new KillRewardListener(this, context.wallets, context.config, context.messages), this);
+        new KillRewardListener(context.wallets, context.config), this);
 
     NovaGemsCommand novaGems = new NovaGemsCommand(
         this, context.wallets, context.messages, context.config, context.shopConfig,
