@@ -145,6 +145,7 @@ public final class ShopConfig {
         s.getString("category", "general"),
         slot,
         material,
+        s.getBoolean("glow", false),
         name,
         lore,
         price,

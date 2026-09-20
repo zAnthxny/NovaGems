@@ -9,6 +9,7 @@ public record ShopReward(
     String category,
     int slot,
     Material icon,
+    boolean glow,
     String name,
     List<String> lore,
     long price,

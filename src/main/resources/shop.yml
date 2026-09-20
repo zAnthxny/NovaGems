@@ -1,5 +1,5 @@
 settings:
-  title: "<gradient:#F6C453:#EAA629>NovaGems · Canjes</gradient>"
+  title: "<gradient:#C77DFF:#7B2CBF>¡Tienda de Gemas!</gradient>"
   confirmation-title: "<gold>Confirmar canje"
 
 gui:
@@ -13,20 +13,306 @@ gui:
   reward-slots: [10, 11, 12, 13, 14, 15, 16, 19, 20, 21, 22, 23, 24, 25, 28, 29, 30, 31, 32, 33, 34, 37, 38, 39, 40, 41, 42, 43]
 
 rewards:
-  survival-key:
+  llave-voto:
     page: 1
     category: llaves
-    slot: 20
-    material: TRIPWIRE_HOOK
-    name: "<gold>Llave Survival"
+    slot: 11
+    material: LIGHT_GRAY_CANDLE
+    glow: true
+    name: "<#D3D3D3>Llave Voto"
     lore:
-      - "<gray>Una llave para la caja Survival."
+      - "<gray>Una llave del crate Voto."
       - ""
       - "<gray>Precio: <white><price> gemas"
-    price: 100
+    price: 2500
     confirmation: true
     actions:
       - type: COMMAND
-        value: "crate key give <player> survival 1"
+        value: "crate key give <player> voto 1"
       - type: MESSAGE
-        value: "<green>Recibiste una llave Survival."
+        value: "<green>Recibiste una llave Voto."
+
+  llave-keyall:
+    page: 1
+    category: llaves
+    slot: 12
+    material: PINK_CANDLE
+    glow: true
+    name: "<#FF8FD1>Llave KeyAll"
+    lore:
+      - "<gray>Una llave del crate KeyAll."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 2600
+    confirmation: true
+    actions:
+      - type: COMMAND
+        value: "crate key give <player> keyall 1"
+      - type: MESSAGE
+        value: "<green>Recibiste una llave KeyAll."
+
+  llave-epica:
+    page: 1
+    category: llaves
+    slot: 13
+    material: PURPLE_CANDLE
+    glow: true
+    name: "<dark_purple>Llave Épica"
+    lore:
+      - "<gray>Una llave del crate Épico."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 3600
+    confirmation: true
+    actions:
+      - type: COMMAND
+        value: "crate key give <player> epic 1"
+      - type: MESSAGE
+        value: "<green>Recibiste una llave Épica."
+
+  llave-spawner:
+    page: 1
+    category: llaves
+    slot: 14
+    material: WHITE_CANDLE
+    glow: true
+    name: "<white>Llave Spawner"
+    lore:
+      - "<gray>Una llave del crate Spawner."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 5400
+    confirmation: true
+    actions:
+      - type: COMMAND
+        value: "crate key give <player> spawner 1"
+      - type: MESSAGE
+        value: "<green>Recibiste una llave Spawner."
+
+  llave-exclusiva:
+    page: 1
+    category: llaves
+    slot: 15
+    material: ORANGE_CANDLE
+    glow: true
+    name: "<#FFA500>Llave Exclusiva"
+    lore:
+      - "<gray>Una llave del crate Exclusiva."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 7500
+    confirmation: true
+    actions:
+      - type: COMMAND
+        value: "crate key give <player> exclusiva 1"
+      - type: MESSAGE
+        value: "<green>Recibiste una llave Exclusiva."
+
+  rango-waton:
+    page: 1
+    category: rangos
+    slot: 20
+    material: ENCHANTED_BOOK
+    name: "<green>Rango Waton <gray>(7 días)"
+    lore:
+      - "<gray>Rango Waton durante 7 días."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 4500
+    confirmation: true
+    actions:
+      - type: COMMAND
+        # TODO: confirma la sintaxis real de tu plugin de permisos (LuckPerms asumido aquí).
+        value: "lp user <player> parent addtemp waton 7d"
+      - type: MESSAGE
+        value: "<green>¡Obtuviste el rango Waton por 7 días!"
+
+  rango-vip-mas:
+    page: 1
+    category: rangos
+    slot: 21
+    material: ENCHANTED_BOOK
+    name: "<aqua>Rango VIP+ <gray>(7 días)"
+    lore:
+      - "<gray>Rango VIP+ durante 7 días."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 7500
+    confirmation: true
+    actions:
+      - type: COMMAND
+        # TODO: confirma la sintaxis real de tu plugin de permisos (LuckPerms asumido aquí).
+        value: "lp user <player> parent addtemp vip+ 7d"
+      - type: MESSAGE
+        value: "<green>¡Obtuviste el rango VIP+ por 7 días!"
+
+  rango-mvip-mas:
+    page: 1
+    category: rangos
+    slot: 22
+    material: ENCHANTED_BOOK
+    name: "<light_purple>Rango MVIP+ <gray>(7 días)"
+    lore:
+      - "<gray>Rango MVIP+ durante 7 días."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 12000
+    confirmation: true
+    actions:
+      - type: COMMAND
+        # TODO: confirma la sintaxis real de tu plugin de permisos (LuckPerms asumido aquí).
+        value: "lp user <player> parent addtemp mvip+ 7d"
+      - type: MESSAGE
+        value: "<green>¡Obtuviste el rango MVIP+ por 7 días!"
+
+  rango-mvip-mas-mas:
+    page: 1
+    category: rangos
+    slot: 23
+    material: ENCHANTED_BOOK
+    name: "<gold>Rango MVIP++ <gray>(7 días)"
+    lore:
+      - "<gray>Rango MVIP++ durante 7 días."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 18000
+    confirmation: true
+    actions:
+      - type: COMMAND
+        # TODO: confirma la sintaxis real de tu plugin de permisos (LuckPerms asumido aquí).
+        value: "lp user <player> parent addtemp mvip++ 7d"
+      - type: MESSAGE
+        value: "<green>¡Obtuviste el rango MVIP++ por 7 días!"
+
+  cmd-repair:
+    page: 1
+    category: comandos
+    slot: 37
+    material: ANVIL
+    name: "<yellow>/repair <gray>(1 día)"
+    lore:
+      - "<gray>Acceso a /repair durante 1 día."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 1200
+    confirmation: true
+    actions:
+      - type: COMMAND
+        # TODO: confirma el nodo de permiso real de tu plugin de repair (EssentialsX asumido aquí).
+        value: "lp user <player> permission settemp essentials.repair.self true 1d"
+      - type: MESSAGE
+        value: "<green>¡Tienes acceso a /repair por 1 día!"
+
+  cmd-anvil:
+    page: 1
+    category: comandos
+    slot: 38
+    material: CHIPPED_ANVIL
+    name: "<yellow>/anvil <gray>(1 día)"
+    lore:
+      - "<gray>Acceso a un yunque portátil durante 1 día."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 1200
+    confirmation: true
+    actions:
+      - type: COMMAND
+        # TODO: confirma el nodo de permiso real de tu plugin de anvil (EssentialsX asumido aquí).
+        value: "lp user <player> permission settemp essentials.anvil true 1d"
+      - type: MESSAGE
+        value: "<green>¡Tienes acceso a /anvil por 1 día!"
+
+  cmd-fly-1d:
+    page: 1
+    category: comandos
+    slot: 39
+    material: FEATHER
+    name: "<yellow>/fly <gray>(1 día)"
+    lore:
+      - "<gray>Acceso a /fly durante 1 día."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 2100
+    confirmation: true
+    actions:
+      - type: COMMAND
+        # TODO: confirma el nodo de permiso real de tu plugin de fly (EssentialsX asumido aquí).
+        value: "lp user <player> permission settemp essentials.fly true 1d"
+      - type: MESSAGE
+        value: "<green>¡Tienes acceso a /fly por 1 día!"
+
+  cmd-fly-3d:
+    page: 1
+    category: comandos
+    slot: 40
+    material: FEATHER
+    name: "<yellow>/fly <gray>(3 días)"
+    lore:
+      - "<gray>Acceso a /fly durante 3 días."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 4500
+    confirmation: true
+    actions:
+      - type: COMMAND
+        # TODO: confirma el nodo de permiso real de tu plugin de fly (EssentialsX asumido aquí).
+        value: "lp user <player> permission settemp essentials.fly true 3d"
+      - type: MESSAGE
+        value: "<green>¡Tienes acceso a /fly por 3 días!"
+
+  cmd-fly-5d:
+    page: 1
+    category: comandos
+    slot: 41
+    material: FEATHER
+    name: "<yellow>/fly <gray>(5 días)"
+    lore:
+      - "<gray>Acceso a /fly durante 5 días."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 5400
+    confirmation: true
+    actions:
+      - type: COMMAND
+        # TODO: confirma el nodo de permiso real de tu plugin de fly (EssentialsX asumido aquí).
+        value: "lp user <player> permission settemp essentials.fly true 5d"
+      - type: MESSAGE
+        value: "<green>¡Tienes acceso a /fly por 5 días!"
+
+  cmd-enderchest-5d:
+    page: 1
+    category: comandos
+    slot: 42
+    material: ENDER_CHEST
+    name: "<yellow>/enderchest <gray>(5 días)"
+    lore:
+      - "<gray>Acceso a /enderchest durante 5 días."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 3000
+    confirmation: true
+    actions:
+      - type: COMMAND
+        # TODO: confirma el nodo de permiso real de tu plugin de enderchest (EssentialsX asumido aquí).
+        value: "lp user <player> permission settemp essentials.enderchest true 5d"
+      - type: MESSAGE
+        value: "<green>¡Tienes acceso a /enderchest por 5 días!"
+
+  cmd-craft-5d:
+    page: 1
+    category: comandos
+    slot: 43
+    material: CRAFTING_TABLE
+    name: "<yellow>/craft <gray>(5 días)"
+    lore:
+      - "<gray>Acceso a /craft durante 5 días."
+      - ""
+      - "<gray>Precio: <white><price> gemas"
+    price: 3000
+    confirmation: true
+    actions:
+      - type: COMMAND
+        # TODO: confirma el nodo de permiso real de tu plugin de craft (EssentialsX asumido aquí).
+        value: "lp user <player> permission settemp essentials.craft true 5d"
+      - type: MESSAGE
+        value: "<green>¡Tienes acceso a /craft por 5 días!"

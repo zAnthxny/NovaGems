@@ -647,7 +647,8 @@ public final class ShopService {
     return named(
         reward.icon(),
         replace(reward.name(), player, reward, balance),
-        lore);
+        lore,
+        reward.glow());
   }
 
   private boolean inventoryFits(Player player, ShopReward reward) {
@@ -696,6 +697,10 @@ public final class ShopService {
   }
 
   private ItemStack named(Material material, String name, List<String> lore) {
+    return named(material, name, lore, false);
+  }
+
+  private ItemStack named(Material material, String name, List<String> lore, boolean glow) {
     ItemStack item = new ItemStack(material);
     ItemMeta meta = item.getItemMeta();
     meta.displayName(messages.parse(name).decoration(TextDecoration.ITALIC, false));
@@ -703,6 +708,10 @@ public final class ShopService {
         .map(messages::parse)
         .map(component -> component.decoration(TextDecoration.ITALIC, false))
         .toList());
+    if (glow) {
+      meta.addEnchant(org.bukkit.enchantments.Enchantment.UNBREAKING, 1, true);
+      meta.addItemFlags(org.bukkit.inventory.ItemFlag.HIDE_ENCHANTS);
+    }
     item.setItemMeta(meta);
     return item;
   }
