@@ -424,3 +424,118 @@ rewards:
         value: "lp user <player> permission settemp essentials.craft true 5d"
       - type: MESSAGE
         value: "<green>¡Tienes acceso a /craft por 5 días!"
+
+  item-totem:
+    page: 1
+    category: general
+    slot: 38
+    material: TOTEM_OF_UNDYING
+    glow: true
+    name: "<white>Tótem <gray>‣ <bold><gradient:#FFD700:#FF8C00>Inmortalidad</gradient></bold>"
+    lore:
+      - "<dark_gray>-  🎁 Recompensas - "
+      - "<white>Adquiere instantaneamente un"
+      - "<white>tótem de la inmortalidad."
+      - ""
+      - "<dark_gray>Información"
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
+    price: 5
+    confirmation: true
+    actions:
+      - type: ITEM
+        material: TOTEM_OF_UNDYING
+        amount: 1
+      - type: MESSAGE
+        value: "<green>Recibiste un Tótem de la Inmortalidad."
+
+  item-manzana-encantada:
+    page: 1
+    category: general
+    slot: 39
+    material: ENCHANTED_GOLDEN_APPLE
+    glow: true
+    name: "<white>Manzana <gray>‣ <bold><gradient:#FFEE58:#FFA000>Encantada</gradient></bold>"
+    lore:
+      - "<dark_gray>-  🎁 Recompensas - "
+      - "<white>Adquiere instantaneamente una"
+      - "<white>manzana de oro encantada."
+      - ""
+      - "<dark_gray>Información"
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
+    price: 20
+    confirmation: true
+    actions:
+      - type: ITEM
+        material: ENCHANTED_GOLDEN_APPLE
+        amount: 1
+      - type: MESSAGE
+        value: "<green>Recibiste una Manzana de Oro Encantada."
+
+  item-manzana-dorada:
+    page: 1
+    category: general
+    slot: 40
+    material: GOLDEN_APPLE
+    glow: true
+    name: "<white>Manzana <gray>‣ <bold><gradient:#FFD54F:#FFB300>Dorada</gradient></bold>"
+    lore:
+      - "<dark_gray>-  🎁 Recompensas - "
+      - "<white>Adquiere instantaneamente una"
+      - "<white>manzana de oro."
+      - ""
+      - "<dark_gray>Información"
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
+    price: 10
+    confirmation: true
+    actions:
+      - type: ITEM
+        material: GOLDEN_APPLE
+        amount: 1
+      - type: MESSAGE
+        value: "<green>Recibiste una Manzana de Oro."
+
+  item-botellas-exp:
+    page: 1
+    category: general
+    slot: 41
+    material: EXPERIENCE_BOTTLE
+    glow: true
+    name: "<white>Experiencia <gray>‣ <bold><gradient:#7CFC00:#32CD32>x64</gradient></bold>"
+    lore:
+      - "<dark_gray>-  🎁 Recompensas - "
+      - "<white>Adquiere instantaneamente 64"
+      - "<white>botellas de experiencia."
+      - ""
+      - "<dark_gray>Información"
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
+    price: 40
+    confirmation: true
+    actions:
+      - type: ITEM
+        material: EXPERIENCE_BOTTLE
+        amount: 64
+      - type: MESSAGE
+        value: "<green>Recibiste 64 Botellas de Experiencia."
+
+  item-perla-ender:
+    page: 1
+    category: general
+    slot: 42
+    material: ENDER_PEARL
+    glow: true
+    name: "<white>Perla <gray>‣ <bold><gradient:#8A2BE2:#4B0082>de Ender</gradient></bold>"
+    lore:
+      - "<dark_gray>-  🎁 Recompensas - "
+      - "<white>Adquiere instantaneamente una"
+      - "<white>perla de ender."
+      - ""
+      - "<dark_gray>Información"
+      - "<green>$ <white>Comprar por: <light_purple><price> gemas"
+    price: 1
+    confirmation: true
+    actions:
+      - type: ITEM
+        material: ENDER_PEARL
+        amount: 1
+      - type: MESSAGE
+        value: "<green>Recibiste una Perla de Ender."

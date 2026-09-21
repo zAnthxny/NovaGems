@@ -114,6 +114,7 @@ public final class ShopService {
                     + Formatters.number(runtime.gemsPerInterval()) + " gemas",
                 "<green>2.- <white>Por cada eliminación conseguirás <light_purple>"
                     + Formatters.number(runtime.killRewards().gemsPerKill()) + " gemas",
+                "<green>3.- <white>Por cada misión completada (/misiones) podrás obtener <light_purple>10 gemas",
                 "",
                 "<yellow>Saldo<dark_gray>: <light_purple>" + Formatters.number(balance) + " gemas")));
     for (ShopReward reward : shop.rewards().values()) {
