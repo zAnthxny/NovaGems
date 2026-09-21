@@ -230,7 +230,7 @@ rewards:
     category: general
     slot: 28
     material: ANVIL
-    name: "<yellow>⭐<white>Comando <green><bold>/REPAIR</bold></green> <gray>(1d)"
+    name: "<white>Comando <green><bold>/REPAIR</bold></green> <gray>(1d)"
     lore:
       - "<dark_gray>-  🎁 Recompensas -"
       - "<white>Adquiere temporalmente el uso"
@@ -259,7 +259,7 @@ rewards:
     category: general
     slot: 29
     material: CHIPPED_ANVIL
-    name: "<yellow>⭐<white>Comando <green><bold>/ANVIL</bold></green> <gray>(1d)"
+    name: "<white>Comando <green><bold>/ANVIL</bold></green> <gray>(1d)"
     lore:
       - "<dark_gray>-  🎁 Recompensas -"
       - "<white>Adquiere temporalmente el uso"
@@ -288,7 +288,7 @@ rewards:
     category: general
     slot: 30
     material: FEATHER
-    name: "<yellow>⭐<white>Comando <green><bold>/FLY</bold></green> <gray>(1d)"
+    name: "<white>Comando <green><bold>/FLY</bold></green> <gray>(1d)"
     lore:
       - "<dark_gray>-  🎁 Recompensas -"
       - "<white>Adquiere temporalmente el uso"
@@ -316,7 +316,7 @@ rewards:
     category: general
     slot: 31
     material: FEATHER
-    name: "<yellow>⭐<white>Comando <green><bold>/FLY</bold></green> <gray>(3d)"
+    name: "<white>Comando <green><bold>/FLY</bold></green> <gray>(3d)"
     lore:
       - "<dark_gray>-  🎁 Recompensas -"
       - "<white>Adquiere temporalmente el uso"
@@ -344,7 +344,7 @@ rewards:
     category: general
     slot: 32
     material: FEATHER
-    name: "<yellow>⭐<white>Comando <green><bold>/FLY</bold></green> <gray>(5d)"
+    name: "<white>Comando <green><bold>/FLY</bold></green> <gray>(5d)"
     lore:
       - "<dark_gray>-  🎁 Recompensas -"
       - "<white>Adquiere temporalmente el uso"
@@ -372,7 +372,7 @@ rewards:
     category: general
     slot: 33
     material: ENDER_CHEST
-    name: "<yellow>⭐<white>Comando <green><bold>/ENDERCHEST</bold></green> <gray>(5d)"
+    name: "<white>Comando <green><bold>/ENDERCHEST</bold></green> <gray>(5d)"
     lore:
       - "<dark_gray>-  🎁 Recompensas -"
       - "<white>Adquiere temporalmente el uso"
@@ -401,7 +401,7 @@ rewards:
     category: general
     slot: 34
     material: CRAFTING_TABLE
-    name: "<yellow>⭐<white>Comando <green><bold>/CRAFT</bold></green> <gray>(5d)"
+    name: "<white>Comando <green><bold>/CRAFT</bold></green> <gray>(5d)"
     lore:
       - "<dark_gray>-  🎁 Recompensas -"
       - "<white>Adquiere temporalmente el uso"

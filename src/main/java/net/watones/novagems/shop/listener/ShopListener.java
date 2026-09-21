@@ -24,7 +24,7 @@ public final class ShopListener implements Listener {
     if (e.getClick() != ClickType.LEFT && e.getClick() != ClickType.RIGHT) return;
     if (holder instanceof ShopMenuHolder menu) shop.select(player, menu, e.getRawSlot());
     else if (holder instanceof ConfirmMenuHolder confirm) {
-      if (e.getRawSlot() == 13) shop.confirm(player, confirm);
+      if (e.getRawSlot() == 15) shop.confirm(player, confirm);
       else if (e.getRawSlot() == 11) shop.open(player, confirm.page(), confirm.category());
     }
   }

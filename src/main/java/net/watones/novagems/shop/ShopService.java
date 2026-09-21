@@ -110,11 +110,13 @@ public final class ShopService {
                 "<gray>Podrás conseguir gemas de",
                 "<gray>las siguientes maneras:",
                 "",
-                "<green>1.- <white>Cada " + intervalMinutes + " minutos conseguirás <light_purple>"
-                    + Formatters.number(runtime.gemsPerInterval()) + " gemas",
-                "<green>2.- <white>Por cada eliminación conseguirás <light_purple>"
+                "<yellow>1.- <white>Cada <green>" + intervalMinutes + " minutos <white>podrás",
+                "<white>conseguir <light_purple>" + Formatters.number(runtime.gemsPerInterval()) + " gemas",
+                "<yellow>2.- <white>En cada eliminación podrás",
+                "<white>conseguir <light_purple>"
                     + Formatters.number(runtime.killRewards().gemsPerKill()) + " gemas",
-                "<green>3.- <white>Por cada misión completada (/misiones) podrás obtener <light_purple>10 gemas",
+                "<yellow>3.- <white>Por cada misión completada <yellow>(/misiones)",
+                "<white>podrás conseguir <light_purple>10 gemas",
                 "",
                 "<yellow>Saldo<dark_gray>: <light_purple>" + Formatters.number(balance) + " gemas")));
     for (ShopReward reward : shop.rewards().values()) {
@@ -206,8 +208,6 @@ public final class ShopService {
     lore.add(
         "<gray>Saldo después: <white>"
             + Formatters.number(Math.max(0, balance - reward.price())));
-    lore.add("");
-    lore.add("<green>✓ Click para confirmar la compra");
     inventory.setItem(
         13,
         named(
@@ -216,7 +216,19 @@ public final class ShopService {
             lore,
             reward.glow()));
     inventory.setItem(
-        11, named(Material.RED_CONCRETE, "<red>Cancelar", List.of("<gray>Vuelve a la tienda")));
+        11,
+        named(
+            Material.RED_STAINED_GLASS_PANE,
+            "<red>✕ Rechazar",
+            List.of("<gray>Vuelve a la tienda"),
+            true));
+    inventory.setItem(
+        15,
+        named(
+            Material.LIME_STAINED_GLASS_PANE,
+            "<green>✓ Confirmar",
+            List.of("<gray>Click para confirmar la compra"),
+            true));
     fillEmpty(inventory);
     player.openInventory(inventory);
   }
