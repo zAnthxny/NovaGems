@@ -139,6 +139,14 @@ public final class ShopConfig {
         default -> throw new IllegalArgumentException("action type desconocido: " + type);
       }
     }
+    boolean quantitySelectable = s.getBoolean("quantity-selectable", false);
+    if (quantitySelectable) {
+      long itemActions = actions.stream().filter(RewardAction.Item.class::isInstance).count();
+      if (itemActions != 1) {
+        throw new IllegalArgumentException(
+            "quantity-selectable requiere exactamente una acción ITEM: " + id);
+      }
+    }
     return new ShopReward(
         id,
         page,
@@ -150,6 +158,7 @@ public final class ShopConfig {
         lore,
         price,
         s.getBoolean("confirmation", false),
+        quantitySelectable,
         actions);
   }
 

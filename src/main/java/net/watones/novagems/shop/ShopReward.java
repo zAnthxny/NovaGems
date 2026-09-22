@@ -14,6 +14,7 @@ public record ShopReward(
     List<String> lore,
     long price,
     boolean confirmation,
+    boolean quantitySelectable,
     List<RewardAction> actions) {
   public ShopReward {
     lore = List.copyOf(lore);

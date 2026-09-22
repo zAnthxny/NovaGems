@@ -249,8 +249,7 @@ rewards:
     confirmation: true
     actions:
       - type: COMMAND
-        # TODO: confirma el nodo de permiso real de tu plugin de repair (EssentialsX asumido aquí).
-        value: "lp user <player> permission settemp essentials.repair.self true 1d"
+        value: "lp user <player> permission settemp essentials.repair true 1d"
       - type: MESSAGE
         value: "<green>¡Tienes acceso a /repair por 1 día!"
 
@@ -420,8 +419,7 @@ rewards:
     confirmation: true
     actions:
       - type: COMMAND
-        # TODO: confirma el nodo de permiso real de tu plugin de craft (EssentialsX asumido aquí).
-        value: "lp user <player> permission settemp essentials.craft true 5d"
+        value: "lp user <player> permission settemp essentials.workbench true 5d"
       - type: MESSAGE
         value: "<green>¡Tienes acceso a /craft por 5 días!"
 
@@ -441,6 +439,7 @@ rewards:
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 5
     confirmation: true
+    quantity-selectable: true
     actions:
       - type: ITEM
         material: TOTEM_OF_UNDYING
@@ -464,6 +463,7 @@ rewards:
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 20
     confirmation: true
+    quantity-selectable: true
     actions:
       - type: ITEM
         material: ENCHANTED_GOLDEN_APPLE
@@ -487,6 +487,7 @@ rewards:
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 10
     confirmation: true
+    quantity-selectable: true
     actions:
       - type: ITEM
         material: GOLDEN_APPLE
@@ -533,6 +534,7 @@ rewards:
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 1
     confirmation: true
+    quantity-selectable: true
     actions:
       - type: ITEM
         material: ENDER_PEARL

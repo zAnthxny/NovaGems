@@ -16,7 +16,9 @@ import net.watones.novagems.economy.WalletService;
 import net.watones.novagems.message.MessageService;
 import net.watones.novagems.session.SessionService;
 import net.watones.novagems.shop.menu.ConfirmMenuHolder;
+import net.watones.novagems.shop.menu.QuantityMenuHolder;
 import net.watones.novagems.shop.menu.ShopMenuHolder;
+import net.watones.novagems.shop.menu.StackPickerHolder;
 import net.watones.novagems.util.Formatters;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
@@ -180,7 +182,9 @@ public final class ShopService {
             .orElse(null);
     if (reward == null) return;
     playUiSound(player, runtimeConfig.current().shopSounds().click());
-    if (reward.confirmation())
+    if (reward.quantitySelectable())
+      openQuantityMenu(player, reward, holder.page(), holder.category(), 1);
+    else if (reward.confirmation())
       openConfirmation(player, reward, holder.page(), holder.category());
     else purchase(player, reward.id(), holder.page(), holder.category());
   }
@@ -233,6 +237,163 @@ public final class ShopService {
     player.openInventory(inventory);
   }
 
+  /** Max stacks selectable via the bulk-quantity menu, regardless of the material's stack size. */
+  private static final int MAX_STACKS = 9;
+  private static final String REFERENCE_QUANTITY_DELIMITER = "@";
+
+  private int maxQuantity(ShopReward reward) {
+    return reward.icon().getMaxStackSize() * MAX_STACKS;
+  }
+
+  private String encodeReference(ShopReward reward, int quantity) {
+    return quantity == 1 ? reward.id() : reward.id() + REFERENCE_QUANTITY_DELIMITER + quantity;
+  }
+
+  private String rewardIdFromReference(String reference) {
+    int at = reference.indexOf(REFERENCE_QUANTITY_DELIMITER);
+    return at < 0 ? reference : reference.substring(0, at);
+  }
+
+  private int quantityFromReference(String reference) {
+    int at = reference.indexOf(REFERENCE_QUANTITY_DELIMITER);
+    if (at < 0) return 1;
+    try {
+      return Math.max(1, Integer.parseInt(reference.substring(at + 1)));
+    } catch (NumberFormatException invalid) {
+      return 1;
+    }
+  }
+
+  public void openQuantityMenu(
+      Player player, ShopReward reward, int page, String category, int requestedQuantity) {
+    PurchaseResult preflight = preflight(player, reward);
+    if (preflight != PurchaseResult.SUCCESS) {
+      showResult(player, preflight, reward);
+      return;
+    }
+    int quantity = Math.max(1, Math.min(requestedQuantity, maxQuantity(reward)));
+    long balance = wallets.account(player.getUniqueId()).map(PlayerAccount::balance).orElse(0L);
+    long totalPrice = totalPrice(reward, quantity);
+    QuantityMenuHolder holder =
+        new QuantityMenuHolder(reward.id(), config.current().version(), page, category, quantity);
+    Inventory inventory =
+        Bukkit.createInventory(holder, 27, messages.parse(config.current().confirmationTitle()));
+    holder.inventory(inventory);
+    List<String> lore = new java.util.ArrayList<>();
+    reward.lore().stream().map(line -> replace(line, player, reward, balance)).forEach(lore::add);
+    lore.add("");
+    lore.add("<gray>Cantidad seleccionada: <white>x" + quantity);
+    lore.add("<gray>Precio total: <light_purple>" + Formatters.number(totalPrice) + " gemas");
+    lore.add("<gray>Saldo actual: <white>" + Formatters.number(balance));
+    lore.add("");
+    lore.add("<green>Click para elegir por stacks");
+    inventory.setItem(
+        13,
+        named(
+            reward.icon(),
+            Math.min(64, quantity),
+            "<green>Comprar por STACKS",
+            lore,
+            reward.glow()));
+    inventory.setItem(10, named(Material.RED_STAINED_GLASS, "<red>- 10", List.of(), true));
+    inventory.setItem(11, named(Material.RED_STAINED_GLASS, "<red>- 1", List.of(), true));
+    inventory.setItem(
+        12,
+        named(
+            Material.RED_STAINED_GLASS,
+            "<red>Restablecer <gray>(x1)",
+            List.of(),
+            true));
+    inventory.setItem(14, named(Material.LIME_STAINED_GLASS, "<green>+ 1", List.of(), true));
+    inventory.setItem(15, named(Material.LIME_STAINED_GLASS, "<green>+ 10", List.of(), true));
+    inventory.setItem(16, named(Material.LIME_STAINED_GLASS, "<green>+ 64", List.of(), true));
+    inventory.setItem(20, named(Material.LIME_CONCRETE, "<green>✓ Confirmar", List.of()));
+    inventory.setItem(
+        24,
+        named(Material.RED_CONCRETE, "<red>✕ Rechazar", List.of("<gray>Vuelve a la tienda")));
+    fillEmpty(inventory);
+    player.openInventory(inventory);
+  }
+
+  public void handleQuantityClick(Player player, QuantityMenuHolder holder, int slot) {
+    if (MenuPosition.stale(holder.snapshotVersion(), config.current().version())) {
+      open(player, holder.page(), holder.category());
+      return;
+    }
+    ShopReward reward = config.current().rewards().get(holder.rewardId());
+    if (reward == null) {
+      showResult(player, PurchaseResult.INVALID_REWARD, null);
+      return;
+    }
+    int max = maxQuantity(reward);
+    int current = holder.quantity();
+    switch (slot) {
+      case 10 -> openQuantityMenu(
+          player, reward, holder.page(), holder.category(), Math.max(1, current - 10));
+      case 11 -> openQuantityMenu(
+          player, reward, holder.page(), holder.category(), Math.max(1, current - 1));
+      case 12 -> openQuantityMenu(player, reward, holder.page(), holder.category(), 1);
+      case 13 -> openStackPicker(player, reward, holder.page(), holder.category(), current);
+      case 14 -> openQuantityMenu(
+          player, reward, holder.page(), holder.category(), Math.min(max, current + 1));
+      case 15 -> openQuantityMenu(
+          player, reward, holder.page(), holder.category(), Math.min(max, current + 10));
+      case 16 -> openQuantityMenu(
+          player, reward, holder.page(), holder.category(), Math.min(max, current + 64));
+      case 20 -> purchase(player, reward.id(), holder.page(), holder.category(), current);
+      case 24 -> open(player, holder.page(), holder.category());
+      default -> {}
+    }
+  }
+
+  public void openStackPicker(
+      Player player, ShopReward reward, int page, String category, int currentQuantity) {
+    int maxStack = reward.icon().getMaxStackSize();
+    StackPickerHolder holder =
+        new StackPickerHolder(reward.id(), config.current().version(), page, category);
+    Inventory inventory =
+        Bukkit.createInventory(holder, 27, messages.parse(config.current().confirmationTitle()));
+    holder.inventory(inventory);
+    for (int stacks = 1; stacks <= MAX_STACKS; stacks++) {
+      int units = maxStack * stacks;
+      long totalPrice = totalPrice(reward, units);
+      boolean selected = units == currentQuantity;
+      List<String> lore =
+          List.of(
+              "<gray>Cantidad: <white>x" + units,
+              "<gray>Precio: <light_purple>" + Formatters.number(totalPrice) + " gemas",
+              selected ? "<yellow>✔ Seleccionado" : "<green>Click para seleccionar");
+      inventory.setItem(
+          8 + stacks,
+          named(reward.icon(), Math.min(64, units), "<green>Stack " + stacks, lore, selected));
+    }
+    fillEmpty(inventory);
+    player.openInventory(inventory);
+  }
+
+  public void handleStackPick(Player player, StackPickerHolder holder, int slot) {
+    if (MenuPosition.stale(holder.snapshotVersion(), config.current().version())) {
+      open(player, holder.page(), holder.category());
+      return;
+    }
+    if (slot < 9 || slot > 17) return;
+    ShopReward reward = config.current().rewards().get(holder.rewardId());
+    if (reward == null) {
+      showResult(player, PurchaseResult.INVALID_REWARD, null);
+      return;
+    }
+    int units = reward.icon().getMaxStackSize() * (slot - 8);
+    openQuantityMenu(player, reward, holder.page(), holder.category(), units);
+  }
+
+  private long totalPrice(ShopReward reward, int quantity) {
+    try {
+      return Math.multiplyExact(reward.price(), (long) quantity);
+    } catch (ArithmeticException overflow) {
+      return Long.MAX_VALUE;
+    }
+  }
+
   public void purchase(Player player, String rewardId) {
     purchase(player, rewardId, 1);
   }
@@ -242,6 +403,11 @@ public final class ShopService {
   }
 
   public void purchase(Player player, String rewardId, int page, String category) {
+    purchase(player, rewardId, page, category, 1);
+  }
+
+  public void purchase(
+      Player player, String rewardId, int page, String category, int requestedQuantity) {
     if (wallets.hasPendingPurchase(player.getUniqueId())) {
       showResult(player, PurchaseResult.PENDING_CONFIRMATION, null, page, category);
       return;
@@ -256,29 +422,38 @@ public final class ShopService {
       showResult(player, PurchaseResult.INVALID_REWARD, null);
       return;
     }
-    PurchaseResult preflight = preflight(player, reward);
+    int quantity =
+        reward.quantitySelectable()
+            ? Math.max(1, Math.min(requestedQuantity, maxQuantity(reward)))
+            : 1;
+    long totalPrice = totalPrice(reward, quantity);
+    PurchaseResult preflight = preflight(player, reward, totalPrice, quantity);
     if (preflight != PurchaseResult.SUCCESS) {
       gate.unlock(player.getUniqueId());
-      showResult(player, preflight, reward);
+      showResult(player, preflight, reward, totalPrice, page, category);
       return;
     }
+    int processingSlot = reward.quantitySelectable() ? 20 : 15;
     player
         .getOpenInventory()
-        .setItem(15, named(Material.CLOCK, "<yellow>Procesando…", List.of()));
+        .setItem(processingSlot, named(Material.CLOCK, "<yellow>Procesando…", List.of()));
     wallets
         .debitForDelivery(
             player.getUniqueId(),
-            reward.price(),
+            totalPrice,
             TransactionType.SHOP_PURCHASE,
             "SHOP_PURCHASE",
-            reward.id(),
+            encodeReference(reward, quantity),
             true)
         .whenComplete(
             (charged, error) ->
                 Bukkit.getScheduler()
                     .runTask(
                         plugin,
-                        () -> chargeCompleted(player, reward, page, category, charged, error)));
+                        () ->
+                            chargeCompleted(
+                                player, reward, page, category, quantity, totalPrice, charged,
+                                error)));
   }
 
   public void confirm(Player player, ConfirmMenuHolder holder) {
@@ -294,6 +469,8 @@ public final class ShopService {
       ShopReward reward,
       int page,
       String category,
+      int quantity,
+      long chargedAmount,
       EconomyResult charged,
       Throwable error) {
     if (error != null || charged == null || !charged.success()) {
@@ -306,7 +483,7 @@ public final class ShopService {
           charged != null && charged.status() == EconomyResult.Status.INSUFFICIENT_FUNDS
               ? PurchaseResult.INSUFFICIENT_FUNDS
               : PurchaseResult.DELIVERY_FAILED;
-      showResult(player, result, reward, page, category);
+      showResult(player, result, reward, chargedAmount, page, category);
       return;
     }
     if (!player.isOnline()) {
@@ -316,7 +493,7 @@ public final class ShopService {
           .info("Entrega " + charged.operationId() + " pendiente hasta la próxima conexión");
       return;
     }
-    finishDelivery(player, reward, charged.operationId(), page, category);
+    finishDelivery(player, reward, charged.operationId(), page, category, quantity, chargedAmount);
   }
 
   public void recoverPending(Player player) {
@@ -330,7 +507,8 @@ public final class ShopService {
         continue;
       }
       if (status != TransactionStatus.DELIVERY_PENDING) continue;
-      ShopReward reward = config.current().rewards().get(operation.reference());
+      String rewardId = rewardIdFromReference(operation.reference());
+      ShopReward reward = config.current().rewards().get(rewardId);
       if (reward == null) {
         wallets
             .markDelivery(
@@ -346,7 +524,14 @@ public final class ShopService {
         continue;
       }
       if (!gate.tryLock(player.getUniqueId())) return;
-      finishDelivery(player, reward, operation.operationId(), 1, "all");
+      finishDelivery(
+          player,
+          reward,
+          operation.operationId(),
+          1,
+          "all",
+          quantityFromReference(operation.reference()),
+          operation.amount());
     }
   }
 
@@ -355,7 +540,8 @@ public final class ShopService {
     if (pending.isEmpty()) return false;
     Player player = Bukkit.getPlayer(pending.get().accountId());
     if (player == null || !player.isOnline() || !gate.tryLock(player.getUniqueId())) return false;
-    ShopReward reward = config.current().rewards().get(pending.get().reference());
+    String rewardId = rewardIdFromReference(pending.get().reference());
+    ShopReward reward = config.current().rewards().get(rewardId);
     if (reward == null) {
       gate.unlock(player.getUniqueId());
       recoverPending(player);
@@ -367,11 +553,23 @@ public final class ShopService {
       gate.unlock(player.getUniqueId());
       return false;
     }
-    finishDelivery(player, reward, operationId, 1, "all");
+    finishDelivery(
+        player,
+        reward,
+        operationId,
+        1,
+        "all",
+        quantityFromReference(pending.get().reference()),
+        pending.get().amount());
     return true;
   }
 
   private PurchaseResult preflight(Player player, ShopReward reward) {
+    return preflight(player, reward, reward.price(), 1);
+  }
+
+  private PurchaseResult preflight(
+      Player player, ShopReward reward, long totalPrice, int quantity) {
     if (wallets.pendingAdministrativeOperation(player.getUniqueId()).isPresent()) {
       return PurchaseResult.ACCOUNT_MUTATION_PENDING;
     }
@@ -388,9 +586,9 @@ public final class ShopService {
       return PurchaseResult.PENDING_CONFIRMATION;
     }
     long balance = wallets.account(player.getUniqueId()).map(PlayerAccount::balance).orElse(-1L);
-    boolean inventoryFits = inventoryFits(player, reward);
+    boolean inventoryFits = inventoryFits(player, reward, quantity);
     PurchasePolicy.Decision decision =
-        PurchasePolicy.validate(balance, reward.price(), inventoryFits);
+        PurchasePolicy.validate(balance, totalPrice, inventoryFits);
     if (decision == PurchasePolicy.Decision.INSUFFICIENT_FUNDS) {
       return balance < 0 ? PurchaseResult.ACCOUNT_NOT_READY : PurchaseResult.INSUFFICIENT_FUNDS;
     }
@@ -403,9 +601,15 @@ public final class ShopService {
   }
 
   private void finishDelivery(
-      Player player, ShopReward reward, UUID operationId, int page, String category) {
+      Player player,
+      ShopReward reward,
+      UUID operationId,
+      int page,
+      String category,
+      int quantity,
+      long chargedAmount) {
     if (operationId == null) {
-      DeliveryOutcome outcome = deliver(player, reward, null);
+      DeliveryOutcome outcome = deliver(player, reward, null, quantity);
       gate.unlock(player.getUniqueId());
       showResult(player, outcome.result(), reward, page, category);
       return;
@@ -432,12 +636,12 @@ public final class ShopService {
                           }
                           DeliveryOutcome outcome =
                               player.isOnline()
-                                  ? deliver(player, reward, operationId)
+                                  ? deliver(player, reward, operationId, quantity)
                                   : new DeliveryOutcome(
                                       PurchaseResult.DELIVERY_FAILED,
                                       true,
                                       "El jugador se desconectó antes de la entrega");
-                          persistDelivery(player, reward, operationId, outcome);
+                          persistDelivery(player, reward, operationId, outcome, chargedAmount);
                           gate.unlock(player.getUniqueId());
                           PurchaseResult visible =
                               outcome.result() == PurchaseResult.DELIVERY_FAILED
@@ -454,7 +658,11 @@ public final class ShopService {
   }
 
   private void persistDelivery(
-      Player player, ShopReward reward, UUID operationId, DeliveryOutcome outcome) {
+      Player player,
+      ShopReward reward,
+      UUID operationId,
+      DeliveryOutcome outcome,
+      long chargedAmount) {
     UUID playerId = player.getUniqueId();
     if (outcome.result() == PurchaseResult.SUCCESS) {
       wallets
@@ -474,7 +682,7 @@ public final class ShopService {
             ignored ->
                 wallets.refundPurchase(
                     playerId,
-                    reward.price(),
+                    chargedAmount,
                     "DELIVERY_FAILURE_CONFIRMED",
                     operationId))
         .thenCompose(
@@ -504,13 +712,15 @@ public final class ShopService {
         .whenComplete((ignored, error) -> logDeliveryAuditFailure(operation.operationId(), error));
   }
 
-  private DeliveryOutcome deliver(Player player, ShopReward reward, UUID operationId) {
+  private DeliveryOutcome deliver(Player player, ShopReward reward, UUID operationId, int quantity) {
     boolean delivered = false;
     boolean irreversibleAttempted = false;
     try {
       for (RewardAction action : reward.actions()) {
         if (!(action instanceof RewardAction.Item item)) continue;
-        Map<Integer, ItemStack> left = player.getInventory().addItem(item.value().clone());
+        ItemStack toGive = item.value().clone();
+        if (reward.quantitySelectable()) toGive.setAmount(quantity);
+        Map<Integer, ItemStack> left = player.getInventory().addItem(toGive);
         delivered = true;
         if (!left.isEmpty()) {
           if (runtimeConfig.current().fullInventoryBehavior()
@@ -587,6 +797,17 @@ public final class ShopService {
 
   private void showResult(
       Player player, PurchaseResult result, ShopReward reward, int page, String category) {
+    showResult(
+        player, result, reward, reward == null ? 0 : reward.price(), page, category);
+  }
+
+  private void showResult(
+      Player player,
+      PurchaseResult result,
+      ShopReward reward,
+      long displayPrice,
+      int page,
+      String category) {
     switch (result) {
       case SUCCESS -> {
         pendingNotices.remove(player.getUniqueId());
@@ -598,7 +819,9 @@ public final class ShopService {
                 "balance",
                 Formatters.number(
                     wallets.account(player.getUniqueId()).map(PlayerAccount::balance).orElse(0L))));
-        open(player, page, category);
+        // Cierra el menú en vez de reabrir la tienda: obliga a reejecutar /gemas para la próxima
+        // compra, evitando reabrir/reclickear sobre un inventario que se está refrescando.
+        player.closeInventory();
       }
       case BUSY -> {
         playUiSound(player, runtimeConfig.current().shopSounds().failure());
@@ -617,7 +840,7 @@ public final class ShopService {
           messages.send(
               player,
               "insufficient-funds",
-              Map.of("price", reward == null ? "?" : Formatters.number(reward.price())));
+              Map.of("price", reward == null ? "?" : Formatters.number(displayPrice)));
       }
       case INVENTORY_FULL -> {
         playUiSound(player, runtimeConfig.current().shopSounds().failure());
@@ -659,7 +882,7 @@ public final class ShopService {
     lore.add("");
     if (wallets.hasPendingPurchase(player.getUniqueId())) {
       lore.add("<yellow>⌛ Tienes un canje procesándose");
-    } else if (!inventoryFits(player, reward)) {
+    } else if (!inventoryFits(player, reward, 1)) {
       lore.add("<red>✕ Libera espacio en tu inventario");
     } else if (balance >= reward.price()) {
       lore.add("<green>✓ Disponible");
@@ -674,14 +897,19 @@ public final class ShopService {
         reward.glow());
   }
 
-  private boolean inventoryFits(Player player, ShopReward reward) {
+  private boolean inventoryFits(Player player, ShopReward reward, int quantity) {
     if (runtimeConfig.current().fullInventoryBehavior()
         == RuntimeConfig.FullInventoryBehavior.DROP) return true;
     List<ItemStack> items =
         reward.actions().stream()
             .filter(RewardAction.Item.class::isInstance)
             .map(RewardAction.Item.class::cast)
-            .map(action -> action.value().clone())
+            .map(
+                action -> {
+                  ItemStack clone = action.value().clone();
+                  if (reward.quantitySelectable()) clone.setAmount(quantity);
+                  return clone;
+                })
             .toList();
     return InventoryCapacity.canFit(player.getInventory(), items);
   }
@@ -724,7 +952,12 @@ public final class ShopService {
   }
 
   private ItemStack named(Material material, String name, List<String> lore, boolean glow) {
-    ItemStack item = new ItemStack(material);
+    return named(material, 1, name, lore, glow);
+  }
+
+  private ItemStack named(
+      Material material, int amount, String name, List<String> lore, boolean glow) {
+    ItemStack item = new ItemStack(material, amount);
     ItemMeta meta = item.getItemMeta();
     meta.displayName(messages.parse(name).decoration(TextDecoration.ITALIC, false));
     meta.lore(lore.stream()
