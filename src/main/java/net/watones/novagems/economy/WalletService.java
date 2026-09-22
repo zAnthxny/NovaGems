@@ -45,7 +45,6 @@ public final class WalletService implements AutoCloseable {
   private final Map<UUID, TransactionStatus> deliveryStatuses = new ConcurrentHashMap<>();
   private final java.util.Set<UUID> activeDeliveries = ConcurrentHashMap.newKeySet();
   private final Map<LeaderboardKey, CacheEntry> leaderboardCache = new ConcurrentHashMap<>();
-  private final Map<UUID, AtomicLong> accountSequences = new ConcurrentHashMap<>();
   private final Map<UUID, Long> assignedSequences = new ConcurrentHashMap<>();
   private final PendingAdministrativeOperations pendingAdministrativeOperations;
   private final ThreadPoolExecutor io;
