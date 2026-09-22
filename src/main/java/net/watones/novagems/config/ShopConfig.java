@@ -140,11 +140,18 @@ public final class ShopConfig {
       }
     }
     boolean quantitySelectable = s.getBoolean("quantity-selectable", false);
+    boolean quantityPanels = s.getBoolean("quantity-panels", false);
     if (quantitySelectable) {
-      long itemActions = actions.stream().filter(RewardAction.Item.class::isInstance).count();
-      if (itemActions != 1) {
+      long scalableActions =
+          actions.stream()
+              .filter(
+                  action ->
+                      action instanceof RewardAction.Item
+                          || action instanceof RewardAction.Command)
+              .count();
+      if (scalableActions != 1) {
         throw new IllegalArgumentException(
-            "quantity-selectable requiere exactamente una acción ITEM: " + id);
+            "quantity-selectable requiere exactamente una acción ITEM o COMMAND: " + id);
       }
     }
     return new ShopReward(
@@ -159,6 +166,7 @@ public final class ShopConfig {
         price,
         s.getBoolean("confirmation", false),
         quantitySelectable,
+        quantityPanels,
         actions);
   }
 

@@ -295,18 +295,17 @@ public final class ShopService {
             "<green>Comprar por STACKS",
             lore,
             reward.glow()));
-    inventory.setItem(10, named(Material.RED_STAINED_GLASS, "<red>- 10", List.of(), true));
-    inventory.setItem(11, named(Material.RED_STAINED_GLASS, "<red>- 1", List.of(), true));
+    Material redQuantity =
+        reward.quantityPanels() ? Material.RED_STAINED_GLASS_PANE : Material.RED_STAINED_GLASS;
+    Material greenQuantity =
+        reward.quantityPanels() ? Material.LIME_STAINED_GLASS_PANE : Material.LIME_STAINED_GLASS;
+    inventory.setItem(10, named(redQuantity, "<red>- 10", List.of(), true));
+    inventory.setItem(11, named(redQuantity, "<red>- 1", List.of(), true));
     inventory.setItem(
-        12,
-        named(
-            Material.RED_STAINED_GLASS,
-            "<red>Restablecer <gray>(x1)",
-            List.of(),
-            true));
-    inventory.setItem(14, named(Material.LIME_STAINED_GLASS, "<green>+ 1", List.of(), true));
-    inventory.setItem(15, named(Material.LIME_STAINED_GLASS, "<green>+ 10", List.of(), true));
-    inventory.setItem(16, named(Material.LIME_STAINED_GLASS, "<green>+ 64", List.of(), true));
+        12, named(redQuantity, "<red>Restablecer <gray>(x1)", List.of(), true));
+    inventory.setItem(14, named(greenQuantity, "<green>+ 1", List.of(), true));
+    inventory.setItem(15, named(greenQuantity, "<green>+ 10", List.of(), true));
+    inventory.setItem(16, named(greenQuantity, "<green>+ 64", List.of(), true));
     inventory.setItem(20, named(Material.LIME_CONCRETE, "<green>✓ Confirmar", List.of()));
     inventory.setItem(
         24,
@@ -735,21 +734,27 @@ public final class ShopService {
       for (RewardAction action : reward.actions()) {
         if (!(action instanceof RewardAction.Command command)) continue;
         irreversibleAttempted = true;
-        boolean accepted =
-            Bukkit.dispatchCommand(
-                Bukkit.getConsoleSender(),
-                command
-                    .value()
-                    .replace("<player>", player.getName())
-                    .replace(
-                        "<operation_id>", operationId == null ? "free" : operationId.toString()));
+        String commandText =
+            command
+                .value()
+                .replace("<player>", player.getName())
+                .replace(
+                    "<operation_id>", operationId == null ? "free" : operationId.toString());
+        if (reward.quantitySelectable()) {
+          commandText = commandText.replace("<quantity>", Integer.toString(quantity));
+        }
+        boolean accepted = Bukkit.dispatchCommand(Bukkit.getConsoleSender(), commandText);
         if (!accepted) throw new IllegalStateException("El comando de canje no fue aceptado");
         delivered = true;
       }
       for (RewardAction action : reward.actions()) {
         try {
           if (action instanceof RewardAction.Message message) {
-            player.sendMessage(messages.parse(message.value()));
+            String text =
+                reward.quantitySelectable()
+                    ? message.value().replace("<quantity>", Integer.toString(quantity))
+                    : message.value();
+            player.sendMessage(messages.parse(text));
           } else if (action instanceof RewardAction.Sound sound) {
             player.playSound(player.getLocation(), sound.value(), sound.volume(), sound.pitch());
           }

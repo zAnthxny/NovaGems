@@ -31,11 +31,13 @@ rewards:
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 2500
     confirmation: true
+    quantity-selectable: true
+    quantity-panels: true
     actions:
       - type: COMMAND
-        value: "crate key give <player> voto 1"
+        value: "crate key give <player> voto <quantity>"
       - type: MESSAGE
-        value: "<green>Recibiste una llave Voto."
+        value: "<green>Recibiste <quantity> llave(s) Voto."
 
   llave-keyall:
     page: 1
@@ -55,11 +57,13 @@ rewards:
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 2600
     confirmation: true
+    quantity-selectable: true
+    quantity-panels: true
     actions:
       - type: COMMAND
-        value: "crate key give <player> keyall 1"
+        value: "crate key give <player> keyall <quantity>"
       - type: MESSAGE
-        value: "<green>Recibiste una llave KeyAll."
+        value: "<green>Recibiste <quantity> llave(s) KeyAll."
 
   llave-epica:
     page: 1
@@ -79,11 +83,13 @@ rewards:
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 3600
     confirmation: true
+    quantity-selectable: true
+    quantity-panels: true
     actions:
       - type: COMMAND
-        value: "crate key give <player> epic 1"
+        value: "crate key give <player> epic <quantity>"
       - type: MESSAGE
-        value: "<green>Recibiste una llave Épica."
+        value: "<green>Recibiste <quantity> llave(s) Épica(s)."
 
   llave-spawner:
     page: 1
@@ -103,11 +109,13 @@ rewards:
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 5400
     confirmation: true
+    quantity-selectable: true
+    quantity-panels: true
     actions:
       - type: COMMAND
-        value: "crate key give <player> spawner 1"
+        value: "crate key give <player> spawner <quantity>"
       - type: MESSAGE
-        value: "<green>Recibiste una llave Spawner."
+        value: "<green>Recibiste <quantity> llave(s) Spawner."
 
   llave-exclusiva:
     page: 1
@@ -127,11 +135,13 @@ rewards:
       - "<green>$ <white>Comprar por: <light_purple><price> gemas"
     price: 7500
     confirmation: true
+    quantity-selectable: true
+    quantity-panels: true
     actions:
       - type: COMMAND
-        value: "crate key give <player> exclusiva 1"
+        value: "crate key give <player> exclusiva <quantity>"
       - type: MESSAGE
-        value: "<green>Recibiste una llave Exclusiva."
+        value: "<green>Recibiste <quantity> llave(s) Exclusiva(s)."
 
   rango-waton:
     page: 1
