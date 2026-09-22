@@ -1038,6 +1038,22 @@ public final class WalletService implements AutoCloseable {
         });
   }
 
+  public CompletableFuture<Map<UUID, java.util.Set<UUID>>> loadDailyKills(String day) {
+    return submitIo(() -> storage.loadDailyKills(day));
+  }
+
+  public CompletableFuture<Void> recordDailyKill(UUID killer, UUID victim, String day) {
+    return submitIo(
+        () -> {
+          storage.recordDailyKill(killer, victim, day, System.currentTimeMillis());
+          return null;
+        });
+  }
+
+  public CompletableFuture<Integer> pruneDailyKillsBefore(String day) {
+    return submitIo(() -> storage.pruneDailyKillsBefore(day));
+  }
+
   public CompletableFuture<List<GemTransaction>> history(UUID uuid, int page, int pageSize) {
     int offset = safeOffset(page, pageSize);
     return submitIo(() -> storage.history(uuid, offset, pageSize));

@@ -9,8 +9,12 @@ import java.sql.Statement;
 import java.sql.Types;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import javax.sql.DataSource;
 import net.watones.novagems.economy.GemTransaction;
@@ -35,6 +39,11 @@ public abstract class JdbcStorageProvider implements StorageProvider {
   }
 
   protected abstract DataSource dataSource();
+
+  /** Dialect for an insert that silently skips an existing primary key. */
+  protected String insertIgnoreInto() {
+    return "INSERT OR IGNORE INTO";
+  }
 
   protected abstract String idColumn();
 
@@ -69,6 +78,12 @@ public abstract class JdbcStorageProvider implements StorageProvider {
               + ", admin_uuid VARCHAR(36) NOT NULL, action VARCHAR(32) NOT NULL, operation_id"
               + " VARCHAR(36) NOT NULL, old_status VARCHAR(32) NOT NULL, new_status VARCHAR(32)"
               + " NOT NULL, details VARCHAR(512), created_at BIGINT NOT NULL)");
+      // One row per rewarded (killer, victim) pair per day: the primary key is what enforces
+      // "the same victim never pays twice", and the row count is the killer's daily total.
+      statement.executeUpdate(
+          "CREATE TABLE IF NOT EXISTS novagems_daily_kills (killer VARCHAR(36) NOT NULL, victim"
+              + " VARCHAR(36) NOT NULL, kill_day VARCHAR(10) NOT NULL, created_at BIGINT NOT NULL,"
+              + " PRIMARY KEY (killer, victim, kill_day))");
     }
 
     migrateTransactionColumns();
@@ -80,6 +95,8 @@ public abstract class JdbcStorageProvider implements StorageProvider {
     ensureIndex("coin_accounts", "idx_coin_accounts_balance", "balance", false);
     ensureIndex(
         "novacoins_admin_audit", "idx_novacoins_audit_operation", "operation_id, created_at", false);
+    // The primary key leads with `killer`, so the per-day load and prune need their own index.
+    ensureIndex("novagems_daily_kills", "idx_novagems_daily_kills_day", "kill_day", false);
     writeSchemaVersion();
   }
 
@@ -603,6 +620,51 @@ public abstract class JdbcStorageProvider implements StorageProvider {
         while (result.next()) output.add(new LeaderboardEntry(result.getString(1), result.getLong(2)));
         return output;
       }
+    }
+  }
+
+  @Override
+  public Map<UUID, Set<UUID>> loadDailyKills(String day) throws Exception {
+    try (Connection connection = dataSource().getConnection();
+        PreparedStatement statement =
+            connection.prepareStatement(
+                "SELECT killer,victim FROM novagems_daily_kills WHERE kill_day = ?")) {
+      statement.setString(1, day);
+      try (ResultSet result = statement.executeQuery()) {
+        Map<UUID, Set<UUID>> output = new HashMap<>();
+        while (result.next()) {
+          UUID killer = UUID.fromString(result.getString(1));
+          output.computeIfAbsent(killer, ignored -> new HashSet<>())
+              .add(UUID.fromString(result.getString(2)));
+        }
+        return output;
+      }
+    }
+  }
+
+  @Override
+  public void recordDailyKill(UUID killer, UUID victim, String day, long timestamp)
+      throws Exception {
+    try (Connection connection = dataSource().getConnection();
+        PreparedStatement statement =
+            connection.prepareStatement(
+                insertIgnoreInto()
+                    + " novagems_daily_kills (killer,victim,kill_day,created_at) VALUES (?,?,?,?)")) {
+      statement.setString(1, killer.toString());
+      statement.setString(2, victim.toString());
+      statement.setString(3, day);
+      statement.setLong(4, timestamp);
+      statement.executeUpdate();
+    }
+  }
+
+  @Override
+  public int pruneDailyKillsBefore(String day) throws Exception {
+    try (Connection connection = dataSource().getConnection();
+        PreparedStatement statement =
+            connection.prepareStatement("DELETE FROM novagems_daily_kills WHERE kill_day < ?")) {
+      statement.setString(1, day);
+      return statement.executeUpdate();
     }
   }
 

@@ -55,6 +55,11 @@ public final class MySqlStorageProvider extends JdbcStorageProvider {
   }
 
   @Override
+  protected String insertIgnoreInto() {
+    return "INSERT IGNORE INTO";
+  }
+
+  @Override
   public int workerThreads() {
     return workerThreads;
   }

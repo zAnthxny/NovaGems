@@ -2,6 +2,7 @@ package net.watones.novagems.session;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -9,10 +10,16 @@ import java.util.Set;
 import java.util.UUID;
 
 /**
- * In-memory daily kill counter for the kill-reward perk. Bounded by the number of distinct players
- * who killed someone <em>today</em>, not by event volume or by lifetime player count: when the
- * local date rolls over every entry is stale by definition, so the whole map is dropped at once.
- * Does not survive a server restart.
+ * Daily kill counter for the kill-reward perk.
+ *
+ * <p>Authoritative in memory while the server runs, and bounded by the number of distinct players
+ * who killed someone <em>today</em>: when the local date rolls over every entry is stale by
+ * definition, so the whole map is dropped at once. {@link #seed} restores the current day from
+ * storage at startup, so a restart part-way through the day does not hand everyone a fresh daily
+ * allowance.
+ *
+ * <p>A killer's daily total is exactly the number of distinct victims they have been paid for, so
+ * the victim set is the only state there is to keep.
  */
 public final class DailyKillTracker {
   /** Returned by {@link #registerKill} when the killer already got credit for this victim today. */
@@ -20,7 +27,7 @@ public final class DailyKillTracker {
   /** Returned by {@link #registerKill} when the killer already hit their daily limit. */
   public static final int LIMIT_REACHED = -1;
 
-  private final Map<UUID, Entry> counts = new HashMap<>();
+  private final Map<UUID, Set<UUID>> victimsByKiller = new HashMap<>();
   private final ZoneId zone;
   private LocalDate currentDay;
 
@@ -40,35 +47,46 @@ public final class DailyKillTracker {
    */
   public synchronized int registerKill(UUID killer, UUID victim, int dailyLimit) {
     rollOverIfNeeded();
-    Entry entry = counts.computeIfAbsent(killer, ignored -> new Entry());
-    if (entry.victims.contains(victim)) return DUPLICATE_VICTIM;
-    if (dailyLimit > 0 && entry.count >= dailyLimit) return LIMIT_REACHED;
-    entry.count++;
-    entry.victims.add(victim);
-    return entry.count;
+    Set<UUID> victims = victimsByKiller.computeIfAbsent(killer, ignored -> new HashSet<>());
+    if (victims.contains(victim)) return DUPLICATE_VICTIM;
+    if (dailyLimit > 0 && victims.size() >= dailyLimit) return LIMIT_REACHED;
+    victims.add(victim);
+    return victims.size();
+  }
+
+  /**
+   * Merges persisted state for {@code day} into memory. Merging rather than replacing keeps any
+   * kill that landed between enable and the storage read finishing.
+   */
+  public synchronized void seed(String day, Map<UUID, Set<UUID>> persisted) {
+    if (!day.equals(todayKey())) return;
+    rollOverIfNeeded();
+    persisted.forEach(
+        (killer, victims) ->
+            victimsByKiller.computeIfAbsent(killer, ignored -> new HashSet<>()).addAll(victims));
   }
 
   /** Read-only: never creates an entry for a player who has not killed anyone today. */
   public synchronized int countToday(UUID killer) {
     rollOverIfNeeded();
-    Entry entry = counts.get(killer);
-    return entry == null ? 0 : entry.count;
+    Set<UUID> victims = victimsByKiller.get(killer);
+    return victims == null ? 0 : victims.size();
   }
 
   public synchronized int trackedPlayers() {
     rollOverIfNeeded();
-    return counts.size();
+    return victimsByKiller.size();
+  }
+
+  /** ISO local date used as the storage key, resolved with this tracker's zone. */
+  public String todayKey() {
+    return LocalDate.now(zone).format(DateTimeFormatter.ISO_LOCAL_DATE);
   }
 
   private void rollOverIfNeeded() {
     LocalDate today = LocalDate.now(zone);
     if (today.equals(currentDay)) return;
-    counts.clear();
+    victimsByKiller.clear();
     currentDay = today;
-  }
-
-  private static final class Entry {
-    private final Set<UUID> victims = new HashSet<>();
-    private int count;
   }
 }

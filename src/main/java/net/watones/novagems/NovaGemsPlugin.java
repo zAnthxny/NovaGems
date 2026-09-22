@@ -17,6 +17,7 @@ import net.watones.novagems.listener.KillRewardListener;
 import net.watones.novagems.listener.PlayerConnectionListener;
 import net.watones.novagems.message.MessageService;
 import net.watones.novagems.placeholder.NovaGemsExpansion;
+import net.watones.novagems.session.DailyKillTracker;
 import net.watones.novagems.session.RewardService;
 import net.watones.novagems.session.SessionRegistry;
 import net.watones.novagems.session.SessionService;
@@ -139,8 +140,10 @@ public final class NovaGemsPlugin extends JavaPlugin {
     getServer().getPluginManager().registerEvents(connections, this);
     getServer().getPluginManager().registerEvents(new ActivityListener(context.guard), this);
     getServer().getPluginManager().registerEvents(new ShopListener(context.shop), this);
+    DailyKillTracker killTracker = new DailyKillTracker();
     getServer().getPluginManager().registerEvents(
-        new KillRewardListener(context.wallets, context.config), this);
+        new KillRewardListener(context.wallets, context.config, killTracker), this);
+    restoreDailyKills(context.wallets, killTracker);
 
     NovaGemsCommand novaGems = new NovaGemsCommand(
         this, context.wallets, context.messages, context.config, context.shopConfig,
@@ -217,6 +220,38 @@ public final class NovaGemsPlugin extends JavaPlugin {
     try { context.storage.close(); }
     catch (Exception failure) { getLogger().log(Level.SEVERE, "Error cerrando bootstrap", failure); }
     if (alerts != null) alerts.close();
+  }
+
+  /**
+   * Daily kill limits live in memory while the server runs, so a mid-day restart would otherwise
+   * hand every player a fresh allowance. Re-read today's rows and drop everything older.
+   */
+  private void restoreDailyKills(WalletService wallets, DailyKillTracker tracker) {
+    String today = tracker.todayKey();
+    wallets
+        .loadDailyKills(today)
+        .whenComplete(
+            (persisted, error) -> {
+              if (error != null) {
+                getLogger().log(Level.WARNING,
+                    "No se pudieron restaurar los límites diarios de asesinatos; este día arranca"
+                        + " en cero", error);
+                return;
+              }
+              tracker.seed(today, persisted);
+              if (!persisted.isEmpty()) {
+                getLogger().info("Límites diarios de asesinatos restaurados para "
+                    + persisted.size() + " jugador(es)");
+              }
+            });
+    wallets
+        .pruneDailyKillsBefore(today)
+        .exceptionally(
+            error -> {
+              getLogger().log(Level.WARNING, "No se pudieron purgar asesinatos de días previos",
+                  error);
+              return 0;
+            });
   }
 
   private void checkOperationalAlerts() {

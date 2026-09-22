@@ -1,7 +1,9 @@
 package net.watones.novagems.storage;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import net.watones.novagems.economy.GemTransaction;
 import net.watones.novagems.economy.EconomyOperation;
@@ -50,6 +52,23 @@ public interface StorageProvider extends AutoCloseable {
   default DurableMutationResult resolveManualReviewRefund(UUID operationId, String adminId)
       throws Exception {
     throw new UnsupportedOperationException("Manual review refund is not supported");
+  }
+
+  /**
+   * Victims each killer already earned a kill reward for on {@code day} (ISO local date). Read once
+   * at startup so a restart does not hand everyone a fresh daily allowance.
+   */
+  default Map<UUID, Set<UUID>> loadDailyKills(String day) throws Exception {
+    return Map.of();
+  }
+
+  /** Idempotent: re-recording the same killer/victim/day is a no-op. */
+  default void recordDailyKill(UUID killer, UUID victim, String day, long timestamp)
+      throws Exception {}
+
+  /** Drops rows for days before {@code day}; the tracker only ever reads the current day. */
+  default int pruneDailyKillsBefore(String day) throws Exception {
+    return 0;
   }
 
   int workerThreads();
