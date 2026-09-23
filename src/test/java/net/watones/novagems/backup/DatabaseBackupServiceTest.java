@@ -40,11 +40,11 @@ class DatabaseBackupServiceTest {
 
   @Test
   void createsTodaysBackupOnceNoMatterHowOftenItChecks() throws Exception {
-    DatabaseBackupService backups = service(7);
-
-    assertThat(backups.runIfDue()).contains(directory.resolve("novagems-2026-09-23.db"));
-    assertThat(backups.runIfDue()).isEmpty();
-    assertThat(backups.runIfDue()).isEmpty();
+    try (DatabaseBackupService backups = service(7)) {
+      assertThat(backups.runIfDue()).contains(directory.resolve("novagems-2026-09-23.db"));
+      assertThat(backups.runIfDue()).isEmpty();
+      assertThat(backups.runIfDue()).isEmpty();
+    }
 
     assertThat(snapshots).hasValue(1);
     assertThat(Files.readString(directory.resolve("novagems-2026-09-23.db"))).isEqualTo("snapshot");
@@ -59,7 +59,9 @@ class DatabaseBackupServiceTest {
     Files.writeString(directory.resolve("notas.txt"), "keep me");
     Files.writeString(directory.resolve("novagems-manual.db"), "keep me");
 
-    service(7).runIfDue();
+    try (DatabaseBackupService backups = service(7)) {
+      backups.runIfDue();
+    }
 
     assertThat(backupNames())
         .containsExactly(
@@ -77,7 +79,7 @@ class DatabaseBackupServiceTest {
   @Test
   void aFailedCopyLeavesNoBackupThatLooksGoodAndTheNextCheckRetries() throws Exception {
     AtomicInteger attempts = new AtomicInteger();
-    DatabaseBackupService backups =
+    try (DatabaseBackupService backups =
         new DatabaseBackupService(
             target -> {
               Files.writeString(target, "partial");
@@ -87,12 +89,12 @@ class DatabaseBackupServiceTest {
             7,
             CLOCK,
             logs::add,
-            (message, error) -> {});
+            (message, error) -> {})) {
+      assertThatThrownBy(backups::runIfDue).hasMessage("disk full");
+      assertThat(directory.resolve("novagems-2026-09-23.db")).doesNotExist();
 
-    assertThatThrownBy(backups::runIfDue).hasMessage("disk full");
-    assertThat(directory.resolve("novagems-2026-09-23.db")).doesNotExist();
-
-    assertThat(backups.runIfDue()).isPresent();
+      assertThat(backups.runIfDue()).isPresent();
+    }
     assertThat(directory.resolve("novagems-2026-09-23.db")).exists();
     assertThat(directory.resolve("novagems-2026-09-23.db.tmp")).doesNotExist();
   }
@@ -101,7 +103,9 @@ class DatabaseBackupServiceTest {
   void removesTemporaryFilesLeftByACrashDuringAPreviousCopy() throws Exception {
     Files.writeString(directory.resolve("novagems-2026-09-20.db.tmp"), "half written");
 
-    service(7).runIfDue();
+    try (DatabaseBackupService backups = service(7)) {
+      backups.runIfDue();
+    }
 
     assertThat(directory.resolve("novagems-2026-09-20.db.tmp")).doesNotExist();
   }

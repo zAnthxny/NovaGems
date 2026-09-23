@@ -106,8 +106,8 @@ public final class NovaGemsPlugin extends JavaPlugin {
       RewardService rewards = new RewardService(this, initializedWallets, config, messages);
       SessionService initializedSessions = new SessionService(
           registry, guard, rewards, config, this, messages, recovery.writerQueueCapacity());
-      ShopService shop = new ShopService(
-          this, shopConfig, config, initializedWallets, messages, initializedSessions);
+      ShopService shop =
+          new ShopService(this, shopConfig, config, initializedWallets, messages);
       BootstrapContext context = new BootstrapContext(config, runtime, messages, shopConfig,
           initializedStorage, initializedWallets, registry, guard, initializedSessions, shop);
       Bukkit.getScheduler().runTask(this, () -> finishEnable(context));

@@ -14,7 +14,6 @@ import net.watones.novagems.economy.TransactionStatus;
 import net.watones.novagems.economy.TransactionType;
 import net.watones.novagems.economy.WalletService;
 import net.watones.novagems.message.MessageService;
-import net.watones.novagems.session.SessionService;
 import net.watones.novagems.shop.menu.ConfirmMenuHolder;
 import net.watones.novagems.shop.menu.QuantityMenuHolder;
 import net.watones.novagems.shop.menu.ShopMenuHolder;
@@ -37,7 +36,6 @@ public final class ShopService {
   private final ConfigManager runtimeConfig;
   private final WalletService wallets;
   private final MessageService messages;
-  private final SessionService sessions;
   private final PurchaseGate gate = new PurchaseGate();
   private final Map<UUID, Long> pendingNotices = new java.util.concurrent.ConcurrentHashMap<>();
 
@@ -46,14 +44,12 @@ public final class ShopService {
       ShopConfig config,
       ConfigManager runtimeConfig,
       WalletService wallets,
-      MessageService messages,
-      SessionService sessions) {
+      MessageService messages) {
     this.plugin = plugin;
     this.config = config;
     this.runtimeConfig = runtimeConfig;
     this.wallets = wallets;
     this.messages = messages;
-    this.sessions = sessions;
     wallets.onDeliveryReady(
         uuid -> {
           if (!plugin.isEnabled()) return;

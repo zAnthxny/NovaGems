@@ -10,7 +10,6 @@ import java.sql.Statement;
 import java.sql.ResultSet;
 import net.watones.novagems.economy.EconomyOperation;
 import net.watones.novagems.economy.MutationKind;
-import net.watones.novagems.economy.PlayerAccount;
 import net.watones.novagems.economy.TransactionStatus;
 import net.watones.novagems.economy.TransactionType;
 import org.junit.jupiter.api.Test;
