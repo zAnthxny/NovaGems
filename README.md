@@ -70,6 +70,12 @@ Todos los placeholders leen caché O(1) y nunca hacen SQL:
 
 SQLite es el valor inicial y usa WAL, `synchronous=FULL`, foreign keys y `busy_timeout`. MySQL/MariaDB usa HikariCP. El esquema v5 migra aditivamente desde v1/v2/v3/v4 sin alterar balances, acumulados o transacciones; añade estado durable para notificaciones de rewards recuperadas. Las filas históricas se marcan como ya notificadas para impedir avisos retroactivos. Los journals v1.1.1 se leen con su timestamp como semilla de migración; todas las capturas nuevas usan formato 2.
 
+### Respaldos automáticos
+
+Con SQLite, NovaGems guarda una copia de la base de datos una vez al día en `plugins/NovaGems/backups/novagems-AAAA-MM-DD.db` y conserva los últimos 7 días (`backup.keep-days`). La copia se hace con el servidor encendido y sin frenar el juego; cada respaldo es un archivo autónomo. Si una copia falla se avisa en consola (y por Discord si está configurado) y se reintenta en la siguiente revisión, una hora después.
+
+Para restaurar: apaga el servidor, borra `novagems.db`, `novagems.db-wal` y `novagems.db-shm`, copia el respaldo elegido como `plugins/NovaGems/novagems.db` y vuelve a encenderlo. Con MySQL el respaldo automático no aplica; usa los respaldos de tu servidor de base de datos.
+
 Todos los parámetros de conexión, pool, colas y caché se comparan durante reload. Si cambia uno que requiere reconstruir storage/executors, se conserva el valor activo y se informa que hace falta reiniciar. Las contraseñas nunca aparecen en logs o status.
 
 ## Recarga y tienda

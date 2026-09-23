@@ -47,6 +47,14 @@ shutdown:
   journal-drain-timeout-seconds: 5
   database-drain-timeout-seconds: 5
 
+# Respaldo automático diario de la base de datos (solo SQLite). Se guarda en
+# plugins/NovaGems/backups/ como novagems-AAAA-MM-DD.db, con el servidor encendido y sin
+# frenar el juego. Se conservan los últimos keep-days días y los más viejos se borran solos.
+# Los cambios aquí se aplican al reiniciar.
+backup:
+  enabled: true
+  keep-days: 7
+
 notifications:
   reward:
     chat: false

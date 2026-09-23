@@ -20,6 +20,7 @@ public record RuntimeConfig(
     int journalDrainTimeoutSeconds,
     int databaseDrainTimeoutSeconds,
     AlertSettings alerts,
+    BackupSettings backup,
     boolean debug) {
   public String storageType() {
     return storage.type();
@@ -46,6 +47,7 @@ public record RuntimeConfig(
         journalDrainTimeoutSeconds,
         databaseDrainTimeoutSeconds,
         alerts,
+        backup,
         debug);
   }
 
@@ -97,4 +99,7 @@ public record RuntimeConfig(
       boolean notifyConsole) {}
 
   public record KillRewards(boolean enabled, long gemsPerKill, int dailyLimit) {}
+
+  /** Daily SQLite snapshot into plugins/NovaGems/backups/, keeping the newest {@code keepDays}. */
+  public record BackupSettings(boolean enabled, int keepDays) {}
 }

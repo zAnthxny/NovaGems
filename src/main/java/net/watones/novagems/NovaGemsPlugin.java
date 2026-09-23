@@ -1,12 +1,14 @@
 package net.watones.novagems;
 
 import java.io.File;
+import java.time.Clock;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import net.watones.novagems.alert.DiscordWebhookAlertService;
 import net.watones.novagems.activity.ActivityGuard;
 import net.watones.novagems.activity.ConservativeActivityGuard;
+import net.watones.novagems.backup.DatabaseBackupService;
 import net.watones.novagems.command.NovaGemsCommand;
 import net.watones.novagems.config.ConfigManager;
 import net.watones.novagems.config.RuntimeConfig;
@@ -36,6 +38,7 @@ public final class NovaGemsPlugin extends JavaPlugin {
   private volatile BukkitTask rewardTask;
   private volatile BukkitTask alertTask;
   private volatile DiscordWebhookAlertService alerts;
+  private volatile DatabaseBackupService backups;
   private volatile boolean stopping;
   private volatile int shutdownTotalSeconds = 10;
 
@@ -144,6 +147,7 @@ public final class NovaGemsPlugin extends JavaPlugin {
     getServer().getPluginManager().registerEvents(
         new KillRewardListener(context.wallets, context.config, killTracker), this);
     restoreDailyKills(context.wallets, killTracker);
+    startBackups(context.storage, context.runtime.backup());
 
     NovaGemsCommand novaGems = new NovaGemsCommand(
         this, context.wallets, context.messages, context.config, context.shopConfig,
@@ -197,6 +201,7 @@ public final class NovaGemsPlugin extends JavaPlugin {
         ? new SessionService.ShutdownReport(0, 0) : sessions.shutdownAndDrain(deadline);
     WalletService.ShutdownReport walletReport = wallets == null
         ? new WalletService.ShutdownReport(0, 0, true) : wallets.closeUntil(deadline);
+    if (backups != null) backups.close();
     if (sessionReport.completedRewardsNotDurable() > 0 || !walletReport.clean()) {
       String detail = walletReport.journalWritesPending() + " journal writes pending, "
           + walletReport.databaseMutationsPending() + " DB mutations pending, "
@@ -220,6 +225,35 @@ public final class NovaGemsPlugin extends JavaPlugin {
     try { context.storage.close(); }
     catch (Exception failure) { getLogger().log(Level.SEVERE, "Error cerrando bootstrap", failure); }
     if (alerts != null) alerts.close();
+  }
+
+  private void startBackups(StorageProvider storage, RuntimeConfig.BackupSettings settings) {
+    if (!settings.enabled()) {
+      getLogger().info("Respaldo automático desactivado en config.yml (backup.enabled)");
+      return;
+    }
+    if (!storage.supportsSnapshot()) {
+      getLogger().info("Respaldo automático solo disponible con SQLite; con MySQL usa los"
+          + " respaldos de tu propio servidor de base de datos");
+      return;
+    }
+    DatabaseBackupService service = new DatabaseBackupService(
+        storage::snapshotTo,
+        getDataFolder().toPath().resolve("backups"),
+        settings.keepDays(),
+        Clock.systemDefaultZone(),
+        message -> getLogger().info(message),
+        (message, error) -> {
+          getLogger().log(Level.WARNING, message, error);
+          DiscordWebhookAlertService currentAlerts = alerts;
+          if (currentAlerts != null) {
+            currentAlerts.alert("backup-failure", "Fallo del respaldo automático",
+                errorSummary(error));
+          }
+        });
+    // First pass a minute after enable, out of the way of recovery replay; then hourly checks.
+    service.start(60, 3600);
+    backups = service;
   }
 
   /**

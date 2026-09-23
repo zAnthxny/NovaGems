@@ -71,6 +71,19 @@ public interface StorageProvider extends AutoCloseable {
     return 0;
   }
 
+  /** Whether {@link #snapshotTo} can copy the live database to a standalone file. */
+  default boolean supportsSnapshot() {
+    return false;
+  }
+
+  /**
+   * Writes a transactionally consistent, standalone copy of the live database to {@code target},
+   * which must not exist yet. Must not block normal reads and writes while it runs.
+   */
+  default void snapshotTo(java.nio.file.Path target) throws Exception {
+    throw new UnsupportedOperationException("Snapshots are not supported by " + description());
+  }
+
   int workerThreads();
 
   String description();

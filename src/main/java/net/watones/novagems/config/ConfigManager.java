@@ -56,6 +56,12 @@ public final class ConfigManager {
     if (killDailyLimit < 0 || killDailyLimit > 100_000) {
       throw new IllegalArgumentException("rewards.kills.daily-limit debe estar entre 0 y 100000");
     }
+    // Defaults on: an existing config.yml without this section still gets daily backups.
+    boolean backupEnabled = config.getBoolean("backup.enabled", true);
+    int backupKeepDays = config.getInt("backup.keep-days", 7);
+    if (backupKeepDays < 1 || backupKeepDays > 365) {
+      throw new IllegalArgumentException("backup.keep-days debe estar entre 1 y 365");
+    }
 
     RuntimeConfig.StorageSettings storage = parseStorage(config);
     RuntimeConfig.FullInventoryBehavior inventoryBehavior;
@@ -219,6 +225,7 @@ public final class ConfigManager {
         journalDrain,
         databaseDrain,
         alerts,
+        new RuntimeConfig.BackupSettings(backupEnabled, backupKeepDays),
         config.getBoolean("debug", false));
   }
 
